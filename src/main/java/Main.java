@@ -1,40 +1,46 @@
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
   public static void main(String[] args){
-      ServerSocket serverSocket = null;
-      Socket clientSocket = null;
-      int port = 6379;
-      try {
-        serverSocket = new ServerSocket(port);
-        // Since the tester restarts your program quite often, setting SO_REUSEADDR
-        // ensures that we don't run into 'Address already in use' errors
-        serverSocket.setReuseAddress(true);
-        // Wait for connection from client.
-        clientSocket = serverSocket.accept();
-      } catch (IOException e) {
-        System.out.println("IOException: " + e.getMessage());
-      } finally {
-        try {
-          if (clientSocket != null) {
-            clientSocket.close();
-          }
-        } catch (IOException e) {
-          System.out.println("IOException: " + e.getMessage());
-        }
-      }
+//      AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+//
+//      context.scan("io.codecrafters");
+//
+//      RedisConfig config = context.getBean(RedisConfig.class);
+//
+//      for (int i = 0; i < args.length; i++)
+//      {
+//          switch (args[i])
+//          {
+//              case "--port":
+//                  config.port = Integer.parseInt(args[i + 1]);
+//                  break;
+//              case "--replicaof":
+//                  config.role = "slave";
+//                  String masterHost = args[i + 1].split(" ")[0];
+//                  int masterPort = Integer.parseInt(args[i + 1].split(" ")[1]);
+//                  config.masterHost = masterHost;
+//                  config.masterPort = masterPort;
+//                  break;
+//              case "--dir":
+//                  config.dir = args[i + 1];
+//                  break;
+//              case "--dbfilename":
+//                  config.dbfilename = args[i + 1];
+//                  break;
+//              default:
+//                  break;
+//          }
+//      }
+
+      TcpServer app =new TcpServer();
+      System.out.println("starting");
+      app.StartMaster();
   }
 }
 
-//@Configuration
-//class AppConfig {
-//    @Bean
-//    public RedisConfig RedisConfig() {
-//        return new RedisConfig();
-//    }
-//}

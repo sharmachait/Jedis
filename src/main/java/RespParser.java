@@ -1,5 +1,8 @@
+import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+@Component
 public class RespParser {
     public RespParser(){
 

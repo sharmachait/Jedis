@@ -1,5 +1,7 @@
+import org.springframework.stereotype.Component;
 import java.util.UUID;
 
+@Component
 public class RedisConfig {
     public String role;
     public int port;
