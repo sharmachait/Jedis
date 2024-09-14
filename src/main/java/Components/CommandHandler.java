@@ -26,7 +26,7 @@ public class CommandHandler {
     public String handle(String[] command, LocalDateTime curr, Client client){
         String cmd = command[0];
         String res="";
-        System.out.println("----------------------------------------------------- "+cmd );
+
         switch(cmd){
             case "ping":
                 res="+PONG\r\n";
@@ -35,10 +35,10 @@ public class CommandHandler {
                 res="+"+command[1]+"\r\n";
                 break;
             case "get":
-
                 res = store.Get(command, curr);
                 break;
             case "set":
+                System.out.println("----------------------------------------------------- "+cmd );
                 res = Set(client, command);
                 String commandRespString = parser.RespArray(command);
                 byte[] toCount = commandRespString.getBytes();
