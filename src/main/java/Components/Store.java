@@ -13,10 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class Store {
 
-    private HashMap<String,Value> map;
+    private ConcurrentHashMap<String,Value> map;
 
     public Store() {
-        map = new HashMap<String,Value>();
+        map = new ConcurrentHashMap<String,Value>();
     }
 
     public String Set(String[] command){
@@ -43,7 +43,7 @@ public class Store {
         try{
             Value val = map.get(command[1]);
             if(curr.isBefore(val.expiry) || curr.isEqual(val.expiry)){
-                return "+{"+ val.val +"}\r\n";
+                return "+"+ val.val +"\r\n";
             }else{
                 map.remove(command[1]);
                 return "$-1\r\n";
