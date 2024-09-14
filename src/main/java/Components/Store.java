@@ -1,3 +1,5 @@
+package Components;
+
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -5,15 +7,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class Store {
-    private Map<String,Value> map;
+
+    private ConcurrentHashMap<String,Value> map;
+
     public Store() {
-        map = new HashMap<String,Value>();
+        map = new ConcurrentHashMap<String,Value>();
     }
+
     public String Set(String[] command){
         try{
             int pxFlag = Arrays.stream(command).toList().indexOf("px");
@@ -29,6 +33,20 @@ public class Store {
                 map.put(command[1],val);
             }
             return "+OK\r\n";
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            return "$-1\r\n";
+        }
+    }
+    public String Get(String[] command, LocalDateTime curr){
+        try{
+            Value val = map.get(command[1]);
+            if(curr.isBefore(val.expiry) || curr.isEqual(val.expiry)){
+                return "+{"+ val.val +"}\r\n";
+            }else{
+                map.remove(command[1]);
+                return "$-1\r\n";
+            }
         }catch(Exception e){
             System.out.println(e.getMessage());
             return "$-1\r\n";

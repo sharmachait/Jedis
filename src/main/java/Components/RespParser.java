@@ -1,12 +1,12 @@
+package Components;
+
 import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Component
 public class RespParser {
-    public RespParser(){
 
-    }
     public List<String[]> Deserialize(byte[] command){
         String _data = new String(command, StandardCharsets.UTF_8);
         String[] commands = _data.split("\\*");

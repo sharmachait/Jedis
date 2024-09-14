@@ -1,3 +1,8 @@
+package Components;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -7,13 +12,25 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+@Component
 public class TcpServer{
-    public TcpServer(){
-
+    private ServerSocket serverSocket;
+    private final RespParser parser;
+    private final CommandHandler commandHandler;
+    private final RedisConfig redisConfig;
+    private final Infra infra;
+    private int id;
+    @Autowired
+    public TcpServer(RespParser parser, CommandHandler commandHandler, RedisConfig redisConfig, Infra infra) {
+        this.parser = parser;
+        this.commandHandler = commandHandler;
+        this.redisConfig = redisConfig;
+        this.infra = infra;
+        this.id=0;
     }
     public void StartMaster(){
         try {
-            ServerSocket serverSocket = new ServerSocket(6379);
+            serverSocket = new ServerSocket(redisConfig.port);
             serverSocket.setReuseAddress(true);
 
             while(true){
@@ -27,7 +44,7 @@ public class TcpServer{
                 InputStream inputStream = clientSocket.getInputStream();
                 OutputStream outputStream = clientSocket.getOutputStream();
 
-                CompletableFuture.runAsync(() -> handleClientAsync(clientSocket,inputStream,outputStream));
+                CompletableFuture<Void> future = handleClientAsync(clientSocket,inputStream,outputStream);
             }
 
         } catch (IOException e) {
@@ -35,8 +52,7 @@ public class TcpServer{
         }
     }
     public CompletableFuture<Void> handleClientAsync(Socket clientSocket,InputStream inputStream,OutputStream outputStream){
-        RespParser parser = new RespParser();
-        CommandHandler handler = new CommandHandler();
+
         return CompletableFuture.runAsync(() -> {
             try {
                 byte[] buffer = new byte[clientSocket.getReceiveBufferSize()];
@@ -45,7 +61,7 @@ public class TcpServer{
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
                         for(String[] command : commands){
-                            String response = handler.handle(command);
+                            String response = commandHandler.handle(command);
                             outputStream.write(response.getBytes());
                         }
                     }

@@ -1,3 +1,5 @@
+package Components;
+
 import org.springframework.stereotype.Component;
 import java.util.UUID;
 
