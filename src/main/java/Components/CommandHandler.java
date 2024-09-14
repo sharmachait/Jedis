@@ -26,6 +26,7 @@ public class CommandHandler {
     public String handle(String[] command, LocalDateTime curr, Client client){
         String cmd = command[0];
         String res="";
+        System.out.println("-----------------------------------------------------");
         switch(cmd){
             case "ping":
                 res="+PONG\r\n";
@@ -34,7 +35,7 @@ public class CommandHandler {
                 res="+"+command[1]+"\r\n";
                 break;
             case "get":
-                System.out.println("-----------------------------------------------------");
+
                 res = store.Get(command, curr);
                 break;
             case "set":
