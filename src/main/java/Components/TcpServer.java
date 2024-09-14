@@ -69,6 +69,7 @@ public class TcpServer{
                         for(String[] command : commands){
 
                             String response = commandHandler.handle(command, LocalDateTime.now(), client);
+                            System.out.println(response+"++++++++++++++++++++++++++++++++++++++++++++++");
                             client.outputStream.write(response.getBytes());
                         }
                     }
