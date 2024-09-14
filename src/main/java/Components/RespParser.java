@@ -21,6 +21,7 @@ public class RespParser {
             String[] commandArray = ParseArray(parts);
             res.add(commandArray);
         }
+        System.out.println(res.get(0)[0]+"==================================================================");
         return res;
     }
     public String[] ParseArray(String[] parts){
