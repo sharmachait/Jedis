@@ -26,7 +26,7 @@ public class CommandHandler {
     public String handle(String[] command, LocalDateTime curr, Client client){
         String cmd = command[0];
         String res="";
-        System.out.println("-----------------------------------------------------");
+        System.out.println("----------------------------------------------------- "+cmd );
         switch(cmd){
             case "ping":
                 res="+PONG\r\n";
