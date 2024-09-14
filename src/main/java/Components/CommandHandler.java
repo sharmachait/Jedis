@@ -34,6 +34,7 @@ public class CommandHandler {
                 res="+"+command[1]+"\r\n";
                 break;
             case "get":
+                System.out.println("-----------------------------------------------------");
                 res = store.Get(command, curr);
                 break;
             case "set":
