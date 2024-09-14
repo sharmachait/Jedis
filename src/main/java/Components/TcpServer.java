@@ -67,9 +67,9 @@ public class TcpServer{
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
                         for(String[] command : commands){
-
+                            System.out.println(command[0]+"++++++++++++++++++++++++++++++++++++++++++++++");
                             String response = commandHandler.handle(command, LocalDateTime.now(), client);
-                            System.out.println(response+"++++++++++++++++++++++++++++++++++++++++++++++");
+
                             client.outputStream.write(response.getBytes());
                         }
                     }
