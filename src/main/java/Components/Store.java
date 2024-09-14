@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -16,7 +15,7 @@ public class Store {
     private ConcurrentHashMap<String,Value> map;
 
     public Store() {
-        map = new ConcurrentHashMap<String,Value>();
+        map = new ConcurrentHashMap<>();
     }
 
     public String Set(String[] command){
