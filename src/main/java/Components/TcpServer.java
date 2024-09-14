@@ -61,8 +61,9 @@ public class TcpServer{
 
         return CompletableFuture.runAsync(() -> {
             try {
-                byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
+
                 while(client.socket.isConnected()){
+                    byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
                     int bytesRead = client.inputStream.read(buffer);
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
