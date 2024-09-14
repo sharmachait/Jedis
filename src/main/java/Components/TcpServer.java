@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,25 +45,31 @@ public class TcpServer{
                 InputStream inputStream = clientSocket.getInputStream();
                 OutputStream outputStream = clientSocket.getOutputStream();
 
-                CompletableFuture<Void> future = handleClientAsync(clientSocket,inputStream,outputStream);
+
+                    Client client = new Client(clientSocket,
+                            remoteIpEndPoint,
+                            inputStream,
+                            outputStream,  id++ );
+                CompletableFuture<Void> future = handleClientAsync(client);
             }
 
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
         }
     }
-    public CompletableFuture<Void> handleClientAsync(Socket clientSocket,InputStream inputStream,OutputStream outputStream){
+    public CompletableFuture<Void> handleClientAsync(Client client){
 
         return CompletableFuture.runAsync(() -> {
             try {
-                byte[] buffer = new byte[clientSocket.getReceiveBufferSize()];
-                while(clientSocket.isConnected()){
-                    int bytesRead = inputStream.read(buffer);
+                byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
+                while(client.socket.isConnected()){
+                    int bytesRead = client.inputStream.read(buffer);
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
                         for(String[] command : commands){
-                            String response = commandHandler.handle(command);
-                            outputStream.write(response.getBytes());
+
+                            String response = commandHandler.handle(command, LocalDateTime.now(), client);
+                            client.outputStream.write(response.getBytes());
                         }
                     }
                 }

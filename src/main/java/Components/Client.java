@@ -19,15 +19,13 @@ public class Client {
                   InetSocketAddress remoteIpEndPoint,
                   InputStream inputStream,
                   OutputStream outputStream,
-                  int port,
-                  String ipAddress,
                   int id) {
         this.socket = socket;
         this.remoteIpEndPoint = remoteIpEndPoint;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
-        this.port = port;
-        this.ipAddress = ipAddress;
+        this.port = remoteIpEndPoint.getPort();
+        this.ipAddress = remoteIpEndPoint.getAddress().getHostAddress();
         this.id = id;
     }
     public void send(String response){
