@@ -7,15 +7,16 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class Store {
 
-    private ConcurrentHashMap<String,Value> map;
+    private HashMap<String,Value> map;
 
     public Store() {
-        map = new ConcurrentHashMap<String,Value>();
+        map = new HashMap<String,Value>();
     }
 
     public String Set(String[] command){
