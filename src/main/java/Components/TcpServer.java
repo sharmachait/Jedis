@@ -194,6 +194,7 @@ public class TcpServer{
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
 
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
+                outputStream.write(res.getBytes());
                 offset++;
                 List<Byte> leftOverCommand = new ArrayList<>();
                 while(true){
@@ -208,8 +209,6 @@ public class TcpServer{
                 StringBuilder leftoverSB = new StringBuilder();
                 for(Byte b : leftOverCommand)
                     leftoverSB.append((char)(b.byteValue() & 0xFF));
-
-                outputStream.write(res.getBytes());
             }
             redisConfig.masterReplOffset+=offset;
         }
