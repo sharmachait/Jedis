@@ -40,6 +40,8 @@ public class Main {
           app.StartMaster();
       }
       else {
+          System.out.println("----------------------------------------------");
+          System.out.println(config.port);
           app.StartSlave();
       }
   }
