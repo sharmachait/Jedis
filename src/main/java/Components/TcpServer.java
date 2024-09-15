@@ -70,7 +70,7 @@ public class TcpServer{
                             //add a stopwatch// no need as of now handle in the command handler
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
                             client.send(response.response);
-                            if(response.data == null){
+                            if(response.data != null){
                                 client.send(response.data);
                             }
                         }
