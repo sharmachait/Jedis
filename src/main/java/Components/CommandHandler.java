@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -185,9 +186,8 @@ public class CommandHandler {
             return parser.RespInteger(required);
         return parser.RespInteger(res);
     }
-    public ResponseDTO Psync(String[] command, Client client){
-        try
-        {
+    public ResponseDTO Psync(String[] command, Client client) {
+        try {
             String clientIpAddress = client.remoteIpEndPoint.getAddress().getHostAddress();
             int clientPort = client.remoteIpEndPoint.getPort();
 
@@ -198,26 +198,30 @@ public class CommandHandler {
                 String emptyRdbFileBase64 =
                         "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
 
-                byte[] rdbFile = emptyRdbFileBase64.getBytes();
+                byte[] rdbFile = Base64.getDecoder().decode(emptyRdbFileBase64);  // Decode the Base64 string
 
-                String rdbFileres = "$"+rdbFile.length+"\r\n"+emptyRdbFileBase64;
+                byte[] rdbResynchronizationFileMsg =
+                        ("$" + rdbFile.length + "\r\n").getBytes("ASCII");  // ASCII encoding for header
+                rdbResynchronizationFileMsg = concatenate(rdbResynchronizationFileMsg, rdbFile);  // Concatenate the arrays
 
-                byte[] rdbResynchronizationFileMsg =rdbFileres.getBytes();
-
-                String res = "+FULLRESYNC "+ config.masterReplId+" "+config.masterReplOffset+"\r\n";
+                String res = "+FULLRESYNC " + config.masterReplId + " " + config.masterReplOffset + "\r\n";
                 infra.slavesThatAreCaughtUp++;
                 return new ResponseDTO(res, rdbResynchronizationFileMsg);
-            }
-            else
-            {
+            } else {
                 return new ResponseDTO("Options not supported");
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseDTO("Options not supported");
         }
+    }
+
+    // Helper method to concatenate byte arrays
+    private byte[] concatenate(byte[] a, byte[] b) {
+        byte[] result = new byte[a.length + b.length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
     }
     public String HandleCommandsFromMaster(String[] command, Socket ConnectionWithMaster)
     {
