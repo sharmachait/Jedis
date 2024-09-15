@@ -29,6 +29,7 @@ public class TcpServer{
         this.infra = infra;
         this.id=0;
     }
+
     public void StartMaster(){
         try {
             serverSocket = new ServerSocket(redisConfig.port);
@@ -67,9 +68,12 @@ public class TcpServer{
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
                         for(String[] command : commands){
-                            System.out.println(command[0]+"++++++++++++++++++++++++++++++++++++++++++++++");
-                            String response = commandHandler.handle(command, LocalDateTime.now(), client);
-                            client.send(response);
+                            //add a stopwatch
+                            ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
+                            client.send(response.response);
+                            if(response.data == null){
+                                client.send(response.data);
+                            }
                         }
                     }
                 }
@@ -77,5 +81,42 @@ public class TcpServer{
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public void StartSlave(){
+        try{
+            serverSocket = new ServerSocket(redisConfig.port);
+            serverSocket.setReuseAddress(true);
+//            Thread slaveThread = new Thread(() -> {InitiateSlavery();});
+//            slaveThread.start();
+            StartMasterForSlaveInstance();
+        }catch(Exception e){
+            System.out.println("IOException: " + e.getMessage());
+        }
+    }
+    public void StartMasterForSlaveInstance(){
+        try {
+            while(true){
+                System.out.println("Waiting for client on port 6379");
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("client connected");
+                InetSocketAddress remoteIpEndPoint = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
+
+                if (remoteIpEndPoint == null)
+                    return;
+                InputStream inputStream = clientSocket.getInputStream();
+                OutputStream outputStream = clientSocket.getOutputStream();
+
+
+                Client client = new Client(clientSocket,
+                        remoteIpEndPoint,
+                        inputStream,
+                        outputStream,  id++ );
+                CompletableFuture<Void> future = handleClientAsync(client);
+            }
+
+        } catch (IOException e) {
+            System.out.println("IOException: " + e.getMessage());
+        }
     }
 }

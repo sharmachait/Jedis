@@ -24,10 +24,10 @@ public class CommandHandler {
     }
 
 
-    public String handle(String[] command, LocalDateTime curr, Client client){
+    public ResponseDTO handle(String[] command, LocalDateTime curr, Client client){
         String cmd = command[0];
         String res="";
-
+        byte[] data=null;
         switch(cmd){
             case "ping":
                 res="+PONG\r\n";
@@ -53,7 +53,7 @@ public class CommandHandler {
                 res = "+No Response\r\n";
                 break;
         }
-        return res;
+        return new ResponseDTO( res, data);
     }
 
     public String Set(Client client, String[] command){

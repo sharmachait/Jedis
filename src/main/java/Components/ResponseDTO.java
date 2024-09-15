@@ -1,3 +1,5 @@
+package Components;
+
 public class ResponseDTO {
     public String response = null;
     public byte[] data = null;

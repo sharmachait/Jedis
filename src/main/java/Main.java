@@ -40,7 +40,7 @@ public class Main {
           app.StartMaster();
       }
       else {
-          //
+          app.StartSlave();
       }
   }
 }
