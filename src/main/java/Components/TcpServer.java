@@ -70,8 +70,8 @@ public class TcpServer{
                         for(String[] command : commands){
                             System.out.println(command[0]+"++++++++++++++++++++++++++++++++++++++++++++++");
                             String response = commandHandler.handle(command, LocalDateTime.now(), client);
-
-                            client.outputStream.write(response.getBytes());
+                            client.send(response);
+                            //client.outputStream.write(response.getBytes());
                         }
                     }
                 }
