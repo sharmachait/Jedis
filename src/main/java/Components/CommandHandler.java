@@ -204,7 +204,7 @@ public class CommandHandler {
                         ("$" + rdbFile.length + "\r\n").getBytes("ASCII");  // ASCII encoding for header
                 rdbResynchronizationFileMsg = concatenate(rdbResynchronizationFileMsg, rdbFile);  // Concatenate the arrays
 
-                String res = "+FULLRESYNC "  + config.masterReplId + " " + config.masterReplOffset + "\r\n";
+                String res = "+FULLRESYNC " + config.masterReplId + " " + config.masterReplOffset + "\r\n";
                 infra.slavesThatAreCaughtUp++;
                 return new ResponseDTO(res, rdbResynchronizationFileMsg);
             } else {
