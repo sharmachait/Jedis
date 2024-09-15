@@ -194,6 +194,7 @@ public class TcpServer{
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
 
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
                 outputStream.write(res.getBytes());
                 offset++;
                 List<Byte> leftOverCommand = new ArrayList<>();
