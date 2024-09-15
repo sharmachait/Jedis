@@ -161,6 +161,7 @@ public class TcpServer{
             }
         }
         while(master.isConnected()){
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
             int offset = 1;
             StringBuilder sb = new StringBuilder();
             List<Byte> bytes = new ArrayList<>();
@@ -193,7 +194,7 @@ public class TcpServer{
             for (String s :commandArray)
                 System.out.print(s+" ");
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
+
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
                 outputStream.write(res.getBytes());
