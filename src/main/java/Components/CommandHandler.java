@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Component
 public class CommandHandler {
@@ -43,8 +44,10 @@ public class CommandHandler {
                 String commandRespString = parser.RespArray(command);
                 byte[] toCount = commandRespString.getBytes();
                 infra.bytesSentToSlave += toCount.length;
-                //CompletableFuture.runAsync(()->sendCommandToSlave(infra.slaves,command));
+                CompletableFuture.runAsync(()->sendCommandToSlaves(infra.slaves,command));
                 break;
+            case "info":
+                res = info(command);
             default:
                 res = "+No Response\r\n";
                 break;
@@ -54,5 +57,31 @@ public class CommandHandler {
 
     public String Set(Client client, String[] command){
         return store.Set(command);
+    }
+    public void sendCommandToSlaves(ConcurrentLinkedQueue<Slave> slaves, String[] command){
+        for(Slave slave : slaves){
+            String commandRespString = parser.RespArray(command);
+            slave.connection.sendAsync(commandRespString);
+        }
+    }
+    public String info(String[] command){
+        switch (command[1]){
+            case "replication":
+                try{
+                    return replication();
+                }catch(Exception e){
+                    return "Invalid Options";
+                }
+            default:
+                return "Invalid Command";
+        }
+    }
+    public String replication(){
+        String role = "role:"+config.role;
+        String masterReplid = "master_replid:"+config.masterReplId;
+        String masterReplOffset = "master_repl_offset:"+config.masterReplOffset;
+        String[] info=new String[]{role,masterReplid,masterReplOffset};
+        String replicationData = String.join("\r\n", info);
+        return parser.RespBulkString(replicationData);
     }
 }

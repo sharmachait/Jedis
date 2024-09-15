@@ -61,7 +61,6 @@ public class TcpServer{
 
         return CompletableFuture.runAsync(() -> {
             try {
-
                 while(client.socket.isConnected()){
                     byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
                     int bytesRead = client.inputStream.read(buffer);
@@ -71,7 +70,6 @@ public class TcpServer{
                             System.out.println(command[0]+"++++++++++++++++++++++++++++++++++++++++++++++");
                             String response = commandHandler.handle(command, LocalDateTime.now(), client);
                             client.send(response);
-                            //client.outputStream.write(response.getBytes());
                         }
                     }
                 }
