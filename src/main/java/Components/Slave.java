@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Slave {
-    public List<String> capcabilities;
+    public List<String> capabilities;
     public Client connection;
     public int id;
     public Slave(int id, Client client){
         this.id = id;
-        this.capcabilities = new ArrayList<>();
+        this.capabilities = new ArrayList<>();
         connection = client;
     }
 }
