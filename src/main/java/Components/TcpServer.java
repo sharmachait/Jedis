@@ -192,7 +192,7 @@ public class TcpServer{
             String[] commandArray = parser.ParseArray(parts);
 
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
-
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
                 System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
                 outputStream.write(res.getBytes());
