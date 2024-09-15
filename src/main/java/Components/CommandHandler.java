@@ -48,6 +48,7 @@ public class CommandHandler {
                 break;
             case "info":
                 res = info(command);
+                break;
             default:
                 res = "+No Response\r\n";
                 break;

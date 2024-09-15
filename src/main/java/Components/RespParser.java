@@ -21,7 +21,6 @@ public class RespParser {
             String[] commandArray = ParseArray(parts);
             res.add(commandArray);
         }
-        System.out.println("==================================================================");
         for(String []c : res ){
             for(String cc:c){
                 System.out.print(cc+" ");
