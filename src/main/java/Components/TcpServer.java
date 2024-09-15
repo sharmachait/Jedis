@@ -128,8 +128,8 @@ public class TcpServer{
         }
     }
     public void StartListeningToMaster(Socket master, InputStream inputStream, OutputStream outputStream) throws IOException {
-        int listeningPort = redisConfig.masterPort;
-        int lenListeningPort = (redisConfig.masterPort+"").length();
+        int listeningPort = redisConfig.port;
+        int lenListeningPort = (redisConfig.port+"").length();
         String[] handshakeParts = new String[]{
                 "*1\r\n$4\r\nPING\r\n",
                 "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$" +
