@@ -204,7 +204,7 @@ public class CommandHandler {
 
                 byte[] rdbResynchronizationFileMsg =rdbFileres.getBytes();
 
-                String res = "+FULLRESYNC"+ config.masterReplId+" "+config.masterReplOffset+"\r\n";
+                String res = "+FULLRESYNC "+ config.masterReplId+" "+config.masterReplOffset+"\r\n";
                 infra.slavesThatAreCaughtUp++;
                 return new ResponseDTO(res, rdbResynchronizationFileMsg);
             }
