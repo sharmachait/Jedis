@@ -191,7 +191,7 @@ public class CommandHandler {
         while(true){
             if(res>=required)
                 break;
-            if(Duration.between(Instant.now(), start).toMillis() >= time)
+            if(Duration.between(start, Instant.now()).toMillis() >= time)
                 break;
             res= infra.slavesThatAreCaughtUp;
         }
