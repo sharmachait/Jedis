@@ -67,12 +67,6 @@ public class TcpServer{
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
-                            if(response.response.equals("")){
-                                System.out.println();
-                                System.out.println("==================================================================");
-                                System.out.println(infra.slavesThatAreCaughtUp);
-                                System.out.println();
-                            }
                             if(!response.response.equals(""))
                                 client.send(response.response);
                             if(response.data != null){

@@ -67,10 +67,6 @@ public class CommandHandler {
                 }
                 Instant start = Instant.now();
                 res = wait(command, client, start);
-                System.out.println();
-                System.out.println("------------------------------------------ slaves that responded positively in time");
-                System.out.println(res);
-                System.out.println();
                 infra.slavesThatAreCaughtUp = 0;
                 break;
             case "psync":
@@ -165,16 +161,12 @@ public class CommandHandler {
                     return "+NOTOK\r\n";
                 }
             case "ACK":
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++ replconf ack");
-                //throw new RuntimeException("handle the ack");
                 infra.slaveAck(Integer.parseInt(command[2]));
                 return "";
         }
         return "+OK\r\n";
     }
     public String wait(String[] command, Client client, Instant start){
-        System.out.println();
-        System.out.println("starting wait ---------------------------------------------------------");
         String[] getackarr = new String[] { "REPLCONF", "GETACK", "*" };
         String getack = parser.RespArray(getackarr);
         byte[] bytearr = getack.getBytes();
@@ -187,7 +179,6 @@ public class CommandHandler {
             CompletableFuture.runAsync(()->{slave.connection.sendAsync(getack);});
         }
         int res = 0;
-        System.out.println("waiting for "+time +"dkfjhgfdkjhgkjdfhgkjfdhgkjdfhgkjdhggkjdhgkjdhgkjdhgkjdhgkjdhgd");
         while(true){
             if(res>=required)
                 break;
@@ -195,7 +186,6 @@ public class CommandHandler {
                 break;
             res= infra.slavesThatAreCaughtUp;
         }
-        System.out.println("ending wait ---------------------------------------------------------");
         infra.bytesSentToSlave+=bufferSize;
         if(res > required)
             return parser.RespInteger(required);
