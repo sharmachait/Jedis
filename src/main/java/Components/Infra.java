@@ -17,7 +17,7 @@ public class Infra {
 
     public void slaveAck(int ackResponse){
         if (this.bytesSentToSlave == ackResponse){
-            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++ replconf ack");
+            System.out.println("==================================================== increasing count");
             this.slavesThatAreCaughtUp++;
         }
     }
