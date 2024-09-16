@@ -187,7 +187,11 @@ public class CommandHandler {
             CompletableFuture.runAsync(()->{slave.connection.sendAsync(getack);});
         }
         int res = 0;
-        while(Duration.between(Instant.now(), start).toMillis() < time){
+        System.out.println("waiting for "+time +"dkfjhgfdkjhgkjdfhgkjfdhgkjdfhgkjdhggkjdhgkjdhgkjdhgkjdhgkjdhgd");
+        while(true){
+            if(res>=required)
+                break;
+            if(Duration.between(Instant.now(), start).toMillis() >= time)
             res= infra.slavesThatAreCaughtUp;
         }
         System.out.println("ending wait ---------------------------------------------------------");
