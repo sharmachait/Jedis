@@ -60,6 +60,7 @@ public class CommandHandler {
                 res = ReplConf(command, client);
                 break;
             case "wait":
+
                 if(infra.bytesSentToSlave == 0){
                     res = parser.RespInteger(infra.slaves.size());
                     break;
@@ -207,7 +208,7 @@ public class CommandHandler {
                 rdbResynchronizationFileMsg = concatenate(rdbResynchronizationFileMsg, rdbFile);  // Concatenate the arrays
 
                 String res = "+FULLRESYNC "  + config.masterReplId + " " + config.masterReplOffset + "\r\n";
-                infra.slavesThatAreCaughtUp++;
+//                infra.slavesThatAreCaughtUp++;
                 return new ResponseDTO(res, rdbResynchronizationFileMsg);
             } else {
                 return new ResponseDTO("Options not supported");
