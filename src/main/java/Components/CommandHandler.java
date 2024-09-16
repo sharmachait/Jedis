@@ -243,8 +243,6 @@ public class CommandHandler {
                 break;
 
             case "replconf":
-                System.out.println("-------------------------------------------");
-                System.out.println("replconfed slave");
                 res = ReplConfSlave(command);
                 break;
 

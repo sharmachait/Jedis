@@ -35,9 +35,7 @@ public class TcpServer{
             serverSocket.setReuseAddress(true);
 
             while(true){
-                System.out.println("Waiting for client on port 6379");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("client connected");
                 InetSocketAddress remoteIpEndPoint = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
 
                 if (remoteIpEndPoint == null)
@@ -69,7 +67,13 @@ public class TcpServer{
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
-                            if(!response.equals(""))
+                            if(response.response.equals("")){
+                                System.out.println();
+                                System.out.println("==================================================================");
+                                System.out.println(infra.slavesThatAreCaughtUp);
+                                System.out.println();
+                            }
+                            if(!response.response.equals(""))
                                 client.send(response.response);
                             if(response.data != null){
                                 client.send(response.data);
@@ -97,9 +101,7 @@ public class TcpServer{
     public void StartMasterForSlaveInstance(){
         try {
             while(true){
-                System.out.println("Waiting for client on port "+redisConfig.port);
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("client connected");
                 InetSocketAddress remoteIpEndPoint = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
 
                 if (remoteIpEndPoint == null)
@@ -122,7 +124,6 @@ public class TcpServer{
     public void InitiateSlavery(){
         try{
             Socket master = new Socket(redisConfig.masterHost, redisConfig.masterPort);
-            System.out.println("Replication from " + redisConfig.masterHost+" "+ redisConfig.masterPort);
             StartListeningToMaster(master, master.getInputStream(),master.getOutputStream());
         }catch(Exception e){
             System.out.println("IOException: " + e.getMessage());
@@ -142,7 +143,6 @@ public class TcpServer{
         byte[] buffer = new byte[1024];
         int c=0;
         for(String part :handshakeParts){
-            System.out.println("Sending: "+part);
             byte[] data = part.getBytes();
             outputStream.write(data);
             if(c==3)
@@ -191,8 +191,6 @@ public class TcpServer{
                 continue;
 
             String[] commandArray = parser.ParseArray(parts);
-            for (String s :commandArray)
-                System.out.print(s+" ");
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
 
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
