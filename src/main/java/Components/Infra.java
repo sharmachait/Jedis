@@ -16,6 +16,13 @@ public class Infra {
     public int slavesThatAreCaughtUp = 0;
 
     public void slaveAck(int ackResponse){
+        System.out.println();
+        System.out.println("--------------------------------------------------- prev value");
+        System.out.println(this.slavesThatAreCaughtUp);
+        System.out.println();
+        System.out.println("--------------------------------------------------- ack response");
+        System.out.println(ackResponse);
+        System.out.println();
         if (this.bytesSentToSlave == ackResponse){
             System.out.println("==================================================== increasing count");
             this.slavesThatAreCaughtUp++;
