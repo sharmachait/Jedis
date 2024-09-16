@@ -173,6 +173,8 @@ public class CommandHandler {
         return "+OK\r\n";
     }
     public String wait(String[] command, Client client, Instant start){
+        System.out.println();
+        System.out.println("starting wait ---------------------------------------------------------");
         String[] getackarr = new String[] { "REPLCONF", "GETACK", "*" };
         String getack = parser.RespArray(getackarr);
         byte[] bytearr = getack.getBytes();
@@ -188,6 +190,7 @@ public class CommandHandler {
         while(Duration.between(Instant.now(), start).toMillis() < time){
             res= infra.slavesThatAreCaughtUp;
         }
+        System.out.println("ending wait ---------------------------------------------------------");
         infra.bytesSentToSlave+=bufferSize;
         if(res > required)
             return parser.RespInteger(required);
