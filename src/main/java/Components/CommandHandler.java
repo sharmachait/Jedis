@@ -160,8 +160,10 @@ public class CommandHandler {
                     return "+NOTOK\r\n";
                 }
             case "ACK":
-                infra.slaveAck(Integer.parseInt(command[2]));
-                return "";
+                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++ replconf ack");
+                throw new RuntimeException("handle the ack");
+                //infra.slaveAck(Integer.parseInt(command[2]));
+                //return "";
         }
         return "+OK\r\n";
     }
