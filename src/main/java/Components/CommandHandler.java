@@ -192,6 +192,7 @@ public class CommandHandler {
             if(res>=required)
                 break;
             if(Duration.between(Instant.now(), start).toMillis() >= time)
+                break;
             res= infra.slavesThatAreCaughtUp;
         }
         System.out.println("ending wait ---------------------------------------------------------");
