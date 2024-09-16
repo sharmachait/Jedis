@@ -67,6 +67,10 @@ public class CommandHandler {
                 }
                 Instant start = Instant.now();
                 res = wait(command, client, start);
+                System.out.println();
+                System.out.println("------------------------------------------ slaves that responded positively in time");
+                System.out.println(res);
+                System.out.println();
                 infra.slavesThatAreCaughtUp = 0;
                 break;
             case "psync":
@@ -208,7 +212,7 @@ public class CommandHandler {
                 rdbResynchronizationFileMsg = concatenate(rdbResynchronizationFileMsg, rdbFile);  // Concatenate the arrays
 
                 String res = "+FULLRESYNC "  + config.masterReplId + " " + config.masterReplOffset + "\r\n";
-//                infra.slavesThatAreCaughtUp++;
+                infra.slavesThatAreCaughtUp++;
                 return new ResponseDTO(res, rdbResynchronizationFileMsg);
             } else {
                 return new ResponseDTO("Options not supported");
