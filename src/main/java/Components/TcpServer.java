@@ -69,7 +69,8 @@ public class TcpServer{
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
-                            client.send(response.response);
+                            if(!response.equals(""))
+                                client.send(response.response);
                             if(response.data != null){
                                 client.send(response.data);
                             }
@@ -161,7 +162,6 @@ public class TcpServer{
             }
         }
         while(master.isConnected()){
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
             int offset = 1;
             StringBuilder sb = new StringBuilder();
             List<Byte> bytes = new ArrayList<>();
@@ -196,7 +196,6 @@ public class TcpServer{
             String res = commandHandler.HandleCommandsFromMaster(commandArray,master);
 
             if (commandArray[0].equals("replconf") && commandArray[1].equals("GETACK")){
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++"+"here");
                 outputStream.write(res.getBytes());
                 offset++;
                 List<Byte> leftOverCommand = new ArrayList<>();
