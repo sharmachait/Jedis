@@ -58,6 +58,8 @@ public class Main {
       TcpServer app =context.getBean(TcpServer.class);
 
       if(config.role.equals("master")){
+          System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
+          System.out.println("starting master server");
           app.StartMaster();
       }
       else {
