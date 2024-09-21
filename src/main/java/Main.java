@@ -39,7 +39,7 @@ public class Main {
           }
       }
 
-      String filePath = config.dir+"\\"+config.dbfilename;
+      String filePath = config.dir+"/"+config.dbfilename;
       File file = new File(filePath);
       System.out.println("Checking file -------------------------------------------------------------------------------");
       System.out.println(filePath);
