@@ -66,6 +66,11 @@ public class TcpServer{
                         List<String[]> commands = parser.Deserialize(buffer);
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
+                            for(String c:command){
+                                System.out.println("============================================================");
+                                System.out.print(c+" ");
+                                System.out.println();
+                            }
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
                             if(!response.response.equals(""))
                                 client.send(response.response);
