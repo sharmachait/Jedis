@@ -48,8 +48,9 @@ public class Main {
                   char c = (char) character;
                   fileContent.append(c);
                   System.out.print(character +" "+c+" , ");
+                  System.out.println();
               }
-              System.out.println();
+
           } catch (FileNotFoundException e) {
               throw new RuntimeException(e);
           } catch (IOException e) {
