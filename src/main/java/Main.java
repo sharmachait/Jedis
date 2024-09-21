@@ -55,6 +55,7 @@ public class Main {
               for(String part : parts){
                   System.out.println(part);
               }
+              System.out.println("================================================parts");
           } catch (FileNotFoundException e) {
               throw new RuntimeException(e);
           } catch (IOException e) {
