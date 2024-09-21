@@ -2,10 +2,7 @@ import Components.RedisConfig;
 import Components.TcpServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Main {
   public static void main(String[] args){
@@ -43,27 +40,20 @@ public class Main {
       File file = new File(filePath);
       if (file.exists() && !file.isDirectory()) {
           // Read data from the file
-          try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-              String line;
-              int lineNumber = 0;
-              //parse rdb file populate the dictionary
-              while ((line = br.readLine()) != null) {
-                  if(lineNumber==0){
-                      config.header = line.substring(0,9);
-                      config.metadata = line.substring(9);
-                      System.out.println("header and metadata-------------------------------------------------------------------------------");
-                      System.out.println(config.header);
-                      for (char c : config.metadata.toCharArray()) {
-                          System.out.print((int)c + " ");
-                      }
-                      System.out.println();
-                  }
-                  lineNumber++;
-                  System.out.println(line);
-
+          try (FileReader fileReader = new FileReader(file)) {
+              int character;
+              StringBuilder fileContent = new StringBuilder();
+              System.out.println("====================================Reading file: " + filePath);
+              while ((character = fileReader.read()) != -1) {
+                  char c = (char) character;
+                  fileContent.append(c);
+                  System.out.print(character);
               }
+              System.out.println();
+          } catch (FileNotFoundException e) {
+              throw new RuntimeException(e);
           } catch (IOException e) {
-              System.out.println("An error occurred while reading the file: " + e.getMessage());
+              throw new RuntimeException(e);
           }
       }
 
