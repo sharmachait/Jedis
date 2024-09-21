@@ -53,7 +53,10 @@ public class Main {
                       config.metadata = line.substring(9);
                       System.out.println("header and metadata-------------------------------------------------------------------------------");
                       System.out.println(config.header);
-                      System.out.println(config.metadata);
+                      for (char c : config.metadata.toCharArray()) {
+                          System.out.print(c);
+                      }
+                      System.out.println();
                   }
                   lineNumber++;
                   System.out.println(line);
