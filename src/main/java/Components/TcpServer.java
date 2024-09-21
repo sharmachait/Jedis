@@ -64,7 +64,7 @@ public class TcpServer{
                     int bytesRead = client.inputStream.read(buffer);
 
                     if(bytesRead > 0){
-                        System.out.println("control reached here++++++++++++++++++++++++++++++++++++++++++++++++++");
+
                         List<String[]> commands = parser.Deserialize(buffer);
 
                         for(String[] command : commands){
