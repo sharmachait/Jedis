@@ -46,7 +46,7 @@ public class Main {
 //              System.out.println("====================================Reading file: " + filePath);
               while ((character = fileReader.read()) != -1) {
                   char c = (char) character;
-                  fileContent.append(c);
+                  fileContent.append(""+c);
 //                  System.out.print(character +" "+c+" , ");
 //                  System.out.println();
               }
