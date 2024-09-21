@@ -64,10 +64,10 @@ public class TcpServer{
                     int bytesRead = client.inputStream.read(buffer);
 
                     if(bytesRead > 0){
+
+                        List<String[]> commands = parser.Deserialize(buffer);
                         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
                         System.out.println(bytesRead);
-                        List<String[]> commands = parser.Deserialize(buffer);
-
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
                             for(String c:command){
