@@ -10,11 +10,13 @@ public class RespParser {
 
     public List<String[]> Deserialize(byte[] command){
         String _data = new String(command, StandardCharsets.UTF_8);
-        System.out.println("-------------------------------------------------------------------" + _data);
         String[] commands = _data.split("\\*");
-        List<String[]> res = new ArrayList<String[]>();
+
+        List<String[]> res = new ArrayList<>();
         int i=0;
+        System.out.println("command parts "+"+++++++++++++++++++++++++++++++++++++++++++++++++++==");
         for(String c : commands){
+            System.out.print(c+" ");
             if(i==0){
                 i++;
                 continue;
