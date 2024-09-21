@@ -54,7 +54,7 @@ public class Main {
                       System.out.println("header and metadata-------------------------------------------------------------------------------");
                       System.out.println(config.header);
                       for (char c : config.metadata.toCharArray()) {
-                          System.out.print(c);
+                          System.out.print((int)c + " ");
                       }
                       System.out.println();
                   }
