@@ -68,4 +68,12 @@ public class RespParser {
         sb.append('$').append(bytes.length).append("\r\n").append(content);
         return sb.toString();
     }
+
+    public String sizeEncoding(){
+
+        return "";
+    }
+    public String sizeDecoding(){
+        return "";
+    }
 }

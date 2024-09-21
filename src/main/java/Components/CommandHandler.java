@@ -119,7 +119,7 @@ public class CommandHandler {
                     case "dir":
                         return parser.RespArray(new String[] {"dir", config.dir });
                     case "dbfilename":
-                        return parser.RespArray(new String[] { "dir", config.dbfilename });
+                        return parser.RespArray(new String[] { "dbfilename", config.dbfilename });
                     default:
                         return "invalid options";
                 }
