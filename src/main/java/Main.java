@@ -50,6 +50,8 @@ public class Main {
               String line;
               //parse rdb file populate the dictionary
               while ((line = br.readLine()) != null) {
+                  line = line.replace('\r','{');
+                  line = line.replace('\n','}');
                   System.out.println(line);
               }
           } catch (IOException e) {
