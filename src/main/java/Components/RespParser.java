@@ -9,6 +9,11 @@ import java.util.*;
 public class RespParser {
     public int getParts (char[] data, int i, String[] subArray){
         int k=0;
+        int t=0;
+        while(t<data.length){
+            System.out.print(data[t++]+" ");
+        }
+        System.out.println("control reached here ======================================================");
         while(i<data.length && k<subArray.length){
             if(data[i] == '$') {
                 String partsLen = "";
@@ -26,7 +31,7 @@ public class RespParser {
                 break;
             }
         }
-        System.out.println("control reached here ======================================================");  
+
         return i;
     }
     public List<String[]> Deserialize(byte[] command){
