@@ -7,30 +7,87 @@ import java.util.*;
 
 @Component
 public class RespParser {
+    public int getParts (char[] data, int i, String[] subArray){
+        int k=0;
+        while(i<data.length && k<subArray.length){
+            if(data[i] == '$') {
+                String partsLen = "";
+                while (i < data.length && Character.isDigit(data[i])) {
+                    partsLen += data[i];
+                    i++;
+                }
+                String part = "";
+                for(int j = 0;j<Integer.parseInt(partsLen);j++) {
+                    part+=data[i++];
+                }
+                subArray[k++] = part;
+            }
+            else if(data[i] == '*') {
+                break;
+            }
+        }
 
+        return i;
+    }
     public List<String[]> Deserialize(byte[] command){
         String _data = new String(command, StandardCharsets.UTF_8);
+        char[] dataArr = _data.toCharArray();
+
         System.out.println(_data+"+++++++++++++++++++++++++++++++++++++++++++++++++++==");
-        String[] commands = _data.split("\\*");
+//        String[] commands = _data.split("\\*");
 
         List<String[]> res = new ArrayList<>();
         int i=0;
-        System.out.println("command parts "+"+++++++++++++++++++++++++++++++++++++++++++++++++++==");
-        for(String c : commands){
-            System.out.print(c+" ");
-            if(i==0){
+        while(i<dataArr.length){
+            char curr = dataArr[i];
+
+            if(curr == '*'){
+                String arrLen = "";
                 i++;
-                continue;
+                while(i<dataArr.length && Character.isDigit(dataArr[i])){
+                    arrLen += dataArr[i];
+                    i++;
+                }
+                if(dataArr[i] == '*'){
+                    String nestedLen = "";
+                    i++;
+                    while(i<dataArr.length && Character.isDigit(dataArr[i])){
+                        nestedLen += dataArr[i];
+                        i++;
+                    }
+                    String[] subArray = new String[Integer.parseInt(nestedLen)];
+                    i = getParts(dataArr, i, subArray);
+                    res.add(subArray);
+                }
+                else{
+                    String[] subArray = new String[Integer.parseInt(arrLen)];
+                    i = getParts(dataArr, i, subArray);
+                    res.add(subArray);
+                }
             }
-            String[] parts = c.split("\r\n");
-            String[] commandArray = ParseArray(parts);
-            res.add(commandArray);
         }
-        for(String []c : res ){
-            for(String cc:c){
-                System.out.print(cc+" ");
+        for(String[] a:res){
+            System.out.println("``````````````````````````````````````````````````````````````````");
+            for(String b:a){
+                System.out.print(b+", ");
             }
+            System.out.println("``````````````````````````````````````````````````````````````````");
         }
+//        int i=0;
+//        for(String c : commands){
+//            if(i==0){
+//                i++;
+//                continue;
+//            }
+//            String[] parts = c.split("\r\n");
+//            String[] commandArray = ParseArray(parts);
+//            res.add(commandArray);
+//        }
+//        for(String []c : res ){
+//            for(String cc:c){
+//                System.out.print(cc+" ");
+//            }
+//        }
         return res;
     }
     public String[] ParseArray(String[] parts){
