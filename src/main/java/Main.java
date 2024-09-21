@@ -43,14 +43,18 @@ public class Main {
           try (FileReader fileReader = new FileReader(file)) {
               int character;
               StringBuilder fileContent = new StringBuilder();
-              System.out.println("====================================Reading file: " + filePath);
+//              System.out.println("====================================Reading file: " + filePath);
               while ((character = fileReader.read()) != -1) {
                   char c = (char) character;
                   fileContent.append(c);
-                  System.out.print(character +" "+c+" , ");
-                  System.out.println();
+//                  System.out.print(character +" "+c+" , ");
+//                  System.out.println();
               }
-
+              String[] parts = fileContent.toString().split((char)(65533)+"");
+              System.out.println("================================================parts");
+              for(String part : parts){
+                  System.out.println(part);
+              }
           } catch (FileNotFoundException e) {
               throw new RuntimeException(e);
           } catch (IOException e) {
