@@ -1,3 +1,4 @@
+import Components.RdbParser;
 import Components.RedisConfig;
 import Components.TcpServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -10,6 +11,7 @@ public class Main {
       AnnotationConfigApplicationContext context =
               new AnnotationConfigApplicationContext(AppConfig.class);
       RedisConfig config = context.getBean(RedisConfig.class);
+      RdbParser rdbParser = context.getBean(RdbParser.class);
 
       for (int i = 0; i < args.length; i++)
       {
@@ -38,29 +40,19 @@ public class Main {
 
       String filePath = config.dir+"/"+config.dbfilename;
       File file = new File(filePath);
-      if (file.exists() && !file.isDirectory()) {
-          // Read data from the file
-          try (FileReader fileReader = new FileReader(file)) {
-              int character;
-              StringBuilder fileContent = new StringBuilder();
-//              System.out.println("====================================Reading file: " + filePath);
-              while ((character = fileReader.read()) != -1) {
-                  char c = (char) character;
-                  fileContent.append(""+c);
-                  System.out.println(c);
-                  
-              }
-              String[] parts = fileContent.toString().split((char)(65533)+"");
-              System.out.println("================================================parts");
-              for(String part : parts){
-                  System.out.println(part);
-              }
-              System.out.println("================================================parts");
-          } catch (FileNotFoundException e) {
-              throw new RuntimeException(e);
-          } catch (IOException e) {
-              throw new RuntimeException(e);
-          }
+
+      if (!file.exists() && file.isDirectory()) {
+          System.out.println("RDB file not found");
+          return;
+      }
+
+      try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
+          rdbParser.parse(dataStream);
+          dataStream.close();
+      } catch (FileNotFoundException e) {
+          throw new RuntimeException(e);
+      } catch (IOException e) {
+          throw new RuntimeException(e);
       }
 
       TcpServer app =context.getBean(TcpServer.class);

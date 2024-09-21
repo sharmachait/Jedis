@@ -3,6 +3,7 @@ package Components;
 import org.springframework.stereotype.Component;
 
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -60,7 +61,6 @@ public class CommandHandler {
                 res = ReplConf(command, client);
                 break;
             case "wait":
-
                 if(infra.bytesSentToSlave == 0){
                     res = parser.RespInteger(infra.slaves.size());
                     break;
@@ -74,11 +74,20 @@ public class CommandHandler {
                 res= response.response;
                 data = response.data;
                 break;
+            case "keys":
+                res = keys(command);
+                break;
             default:
                 res = "+No Response\r\n";
                 break;
         }
         return new ResponseDTO( res, data);
+    }
+
+    public String keys(String[] command) {
+        String pattern = command[1];
+        System.out.println("pattern ==========================================="+pattern);
+        return "";
     }
 
     public String Set(Client client, String[] command){
