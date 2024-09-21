@@ -46,14 +46,14 @@ public class Main {
           return;
       }
 
-      try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
-          rdbParser.parse(dataStream);
-          dataStream.close();
-      } catch (FileNotFoundException e) {
-          throw new RuntimeException(e);
-      } catch (IOException e) {
-          throw new RuntimeException(e);
-      }
+//      try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
+//          rdbParser.parse(dataStream);
+//          dataStream.close();
+//      } catch (FileNotFoundException e) {
+//          throw new RuntimeException(e);
+//      } catch (IOException e) {
+//          throw new RuntimeException(e);
+//      }
 
       TcpServer app =context.getBean(TcpServer.class);
 
