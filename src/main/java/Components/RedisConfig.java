@@ -13,6 +13,8 @@ public class RedisConfig {
     public long masterReplOffset;
     public String dir;
     public String dbfilename;
+    public String header;
+    public String metadata;
 
     public RedisConfig(String role, int port, int masterPort, String masterHost ) {
         this.role=role;

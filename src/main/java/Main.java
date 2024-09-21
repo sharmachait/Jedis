@@ -41,19 +41,23 @@ public class Main {
 
       String filePath = config.dir+"/"+config.dbfilename;
       File file = new File(filePath);
-      System.out.println("Checking file -------------------------------------------------------------------------------");
-      System.out.println(filePath);
       if (file.exists() && !file.isDirectory()) {
-          System.out.println("File exists. Reading data from it...");
           // Read data from the file
           try (BufferedReader br = new BufferedReader(new FileReader(file))) {
               String line;
+              int lineNumber = 0;
               //parse rdb file populate the dictionary
               while ((line = br.readLine()) != null) {
-                  line = line.replace('\r','/');
-                  line = line.replace('\n','/');
+                  if(lineNumber==0){
+                      config.header = line.substring(0,9);
+                      config.metadata = line.substring(9);
+                      System.out.println("header and metadata-------------------------------------------------------------------------------");
+                      System.out.println(config.header);
+                      System.out.println(config.metadata);
+                  }
+                  lineNumber++;
                   System.out.println(line);
-                  System.out.println("Checking file -------------------------------------------------------------------------------");
+
               }
           } catch (IOException e) {
               System.out.println("An error occurred while reading the file: " + e.getMessage());
