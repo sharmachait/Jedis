@@ -9,7 +9,7 @@ import java.util.*;
 public class RespParser {
     public int getParts (char[] data, int i, String[] subArray){
         int k=0;
-        int t=0;
+        int t=i;
         while(t<data.length){
             System.out.print(data[t++]+" ");
         }
