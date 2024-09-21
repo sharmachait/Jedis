@@ -62,9 +62,10 @@ public class TcpServer{
                 while(client.socket.isConnected()){
                     byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
                     int bytesRead = client.inputStream.read(buffer);
-                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
-                    System.out.println(bytesRead);
+
                     if(bytesRead > 0){
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
+                        System.out.println(bytesRead);
                         List<String[]> commands = parser.Deserialize(buffer);
 
                         for(String[] command : commands){
