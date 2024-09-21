@@ -26,7 +26,7 @@ public class RespParser {
                 break;
             }
         }
-
+        System.out.println("control reached here ======================================================");  
         return i;
     }
     public List<String[]> Deserialize(byte[] command){
@@ -61,7 +61,7 @@ public class RespParser {
                     res.add(subArray);
                 }
                 else{
-                    System.out.println("control reached here ======================================================");
+
                     String[] subArray = new String[Integer.parseInt(arrLen)];
                     i = getParts(dataArr, i, subArray);
                     res.add(subArray);
