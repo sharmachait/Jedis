@@ -30,11 +30,11 @@ public class RespParser {
         return i;
     }
     public List<String[]> Deserialize(byte[] command){
-        System.out.println("control reached here++++++++++++++++++++++++++++++++++++++++++++++++++");
+
         String _data = new String(command, StandardCharsets.UTF_8);
         char[] dataArr = _data.toCharArray();
+        System.out.println("control reached here ======================================================");
 
-        System.out.println(_data+"+++++++++++++++++++++++++++++++++++++++++++++++++++==");
 //        String[] commands = _data.split("\\*");
 
         List<String[]> res = new ArrayList<>();
