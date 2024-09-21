@@ -62,11 +62,11 @@ public class TcpServer{
                 while(client.socket.isConnected()){
                     byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
                     int bytesRead = client.inputStream.read(buffer);
-
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
+                    System.out.println(bytesRead);
                     if(bytesRead > 0){
                         List<String[]> commands = parser.Deserialize(buffer);
-                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
-                        System.out.println("starting master server");
+
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
                             for(String c:command){
