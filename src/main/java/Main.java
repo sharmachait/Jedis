@@ -47,7 +47,7 @@ public class Main {
               while ((character = fileReader.read()) != -1) {
                   char c = (char) character;
                   fileContent.append(c);
-                  System.out.print(character);
+                  System.out.print(character +", ");
               }
               System.out.println();
           } catch (FileNotFoundException e) {
