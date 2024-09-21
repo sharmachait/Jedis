@@ -47,8 +47,8 @@ public class Main {
               while ((character = fileReader.read()) != -1) {
                   char c = (char) character;
                   fileContent.append(""+c);
-//                  System.out.print(character +" "+c+" , ");
-//                  System.out.println();
+                  System.out.println(c);
+                  
               }
               String[] parts = fileContent.toString().split((char)(65533)+"");
               System.out.println("================================================parts");
