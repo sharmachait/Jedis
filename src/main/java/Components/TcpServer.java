@@ -37,8 +37,6 @@ public class TcpServer{
             while(true){
                 Socket clientSocket = serverSocket.accept();
                 InetSocketAddress remoteIpEndPoint = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
-                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
-                System.out.println("starting master server");
                 if (remoteIpEndPoint == null)
                     return;
                 InputStream inputStream = clientSocket.getInputStream();
@@ -60,6 +58,8 @@ public class TcpServer{
 
         return CompletableFuture.runAsync(() -> {
             try {
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
+                System.out.println("starting master server");
                 while(client.socket.isConnected()){
                     byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
                     int bytesRead = client.inputStream.read(buffer);
