@@ -2,6 +2,11 @@ import Components.RedisConfig;
 import Components.TcpServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Main {
   public static void main(String[] args){
 
@@ -31,6 +36,22 @@ public class Main {
                   break;
               default:
                   break;
+          }
+      }
+
+      String filePath = config.dir+"\\"+config.dbfilename;
+      File file = new File(filePath);
+      if (file.exists() && !file.isDirectory()) {
+          System.out.println("File exists. Reading data from it...");
+          // Read data from the file
+          try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+              String line;
+              //parse rdb file populate the dictionary
+              while ((line = br.readLine()) != null) {
+                  System.out.println(line);
+              }
+          } catch (IOException e) {
+              System.out.println("An error occurred while reading the file: " + e.getMessage());
           }
       }
 
