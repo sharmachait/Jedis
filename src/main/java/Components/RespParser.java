@@ -2,6 +2,7 @@ package Components;
 
 import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.*;
 
 @Component
@@ -9,6 +10,7 @@ public class RespParser {
 
     public List<String[]> Deserialize(byte[] command){
         String _data = new String(command, StandardCharsets.UTF_8);
+        System.out.println("-------------------------------------------------------------------" + _data);
         String[] commands = _data.split("\\*");
         List<String[]> res = new ArrayList<String[]>();
         int i=0;
