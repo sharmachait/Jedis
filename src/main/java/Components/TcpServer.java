@@ -64,17 +64,11 @@ public class TcpServer{
                     int bytesRead = client.inputStream.read(buffer);
 
                     if(bytesRead > 0){
-
+                        System.out.println("control reached here++++++++++++++++++++++++++++++++++++++++++++++++++");
                         List<String[]> commands = parser.Deserialize(buffer);
-                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++===");
-                        System.out.println(bytesRead);
+
                         for(String[] command : commands){
                             //add a stopwatch// no need as of now handle in the command handler
-                            for(String c:command){
-                                System.out.println("============================================================");
-                                System.out.print(c+" ");
-                                System.out.println();
-                            }
                             ResponseDTO response = commandHandler.handle(command, LocalDateTime.now(), client);
                             if(!response.response.equals(""))
                                 client.send(response.response);
