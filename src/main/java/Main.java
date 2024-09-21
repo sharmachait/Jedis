@@ -50,9 +50,10 @@ public class Main {
               String line;
               //parse rdb file populate the dictionary
               while ((line = br.readLine()) != null) {
-                  line = line.replace('\r','{');
-                  line = line.replace('\n','}');
+                  line = line.replace('\r','/');
+                  line = line.replace('\n','/');
                   System.out.println(line);
+                  System.out.println("Checking file -------------------------------------------------------------------------------");
               }
           } catch (IOException e) {
               System.out.println("An error occurred while reading the file: " + e.getMessage());
