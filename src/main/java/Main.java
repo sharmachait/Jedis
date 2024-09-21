@@ -42,6 +42,7 @@ public class Main {
       String filePath = config.dir+"\\"+config.dbfilename;
       File file = new File(filePath);
       System.out.println("Checking file -------------------------------------------------------------------------------");
+      System.out.println(filePath);
       if (file.exists() && !file.isDirectory()) {
           System.out.println("File exists. Reading data from it...");
           // Read data from the file
