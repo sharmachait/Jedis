@@ -9,26 +9,28 @@ import java.util.*;
 public class RespParser {
     public int getParts (char[] data, int i, String[] subArray){
         int k=0;
-        int t=i;
-        while(t<data.length){
-            System.out.print(data[t++]+" ");
-        }
-        System.out.println("control reached here ======================================================");
+
         while(i<data.length && k<subArray.length){
             if(data[i] == '$') {
+                i++;
                 String partsLen = "";
                 while (i < data.length && Character.isDigit(data[i])) {
                     partsLen += data[i];
                     i++;
                 }
+                i+=2;
                 String part = "";
                 for(int j = 0;j<Integer.parseInt(partsLen);j++) {
                     part+=data[i++];
                 }
+                i+=2;
                 subArray[k++] = part;
             }
             else if(data[i] == '*') {
                 break;
+            }
+            else if(data[i]=='\r'){
+                i+=2;
             }
         }
 
@@ -46,7 +48,8 @@ public class RespParser {
         int i=0;
         while(i<dataArr.length){
             char curr = dataArr[i];
-
+            if(curr=='\u0000')
+                break;
             if(curr == '*'){
                 String arrLen = "";
                 i++;
@@ -54,19 +57,22 @@ public class RespParser {
                     arrLen += dataArr[i];
                     i++;
                 }
+                i+=2;
                 if(dataArr[i] == '*'){
-                    String nestedLen = "";
-                    i++;
-                    while(i<dataArr.length && Character.isDigit(dataArr[i])){
-                        nestedLen += dataArr[i];
+                    for(int t=0;t<Integer.parseInt(arrLen);t++) {
+                        String nestedLen = "";
                         i++;
+                        while(i<dataArr.length && Character.isDigit(dataArr[i])){
+                            nestedLen += dataArr[i];
+                            i++;
+                        }
+                        i+=2;
+                        String[] subArray = new String[Integer.parseInt(nestedLen)];
+                        i = getParts(dataArr, i, subArray);
+                        res.add(subArray);
                     }
-                    String[] subArray = new String[Integer.parseInt(nestedLen)];
-                    i = getParts(dataArr, i, subArray);
-                    res.add(subArray);
                 }
                 else{
-
                     String[] subArray = new String[Integer.parseInt(arrLen)];
                     i = getParts(dataArr, i, subArray);
                     res.add(subArray);

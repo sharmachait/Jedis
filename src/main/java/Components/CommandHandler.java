@@ -35,32 +35,32 @@ public class CommandHandler {
         String res="";
         byte[] data=null;
         switch(cmd){
-            case "ping":
+            case "PING":
                 res="+PONG\r\n";
                 break;
-            case "config":
+            case "CONFIG":
                 res = config(command);
                 break;
-            case "echo":
+            case "ECHO":
                 res="+"+command[1]+"\r\n";
                 break;
-            case "get":
+            case "GET":
                 res = store.Get(command, curr);
                 break;
-            case "set":
+            case "SET":
                 res = Set(client, command);
                 String commandRespString = parser.RespArray(command);
                 byte[] toCount = commandRespString.getBytes();
                 infra.bytesSentToSlave += toCount.length;
                 CompletableFuture.runAsync(()->sendCommandToSlaves(infra.slaves,command));
                 break;
-            case "info":
+            case "INFO":
                 res = info(command);
                 break;
-            case "replconf":
+            case "REPLCONF":
                 res = ReplConf(command, client);
                 break;
-            case "wait":
+            case "WAIT":
                 if(infra.bytesSentToSlave == 0){
                     res = parser.RespInteger(infra.slaves.size());
                     break;
@@ -69,12 +69,12 @@ public class CommandHandler {
                 res = wait(command, client, start);
                 infra.slavesThatAreCaughtUp = 0;
                 break;
-            case "psync":
+            case "PSYNC":
                 ResponseDTO response = Psync(command,client);
                 res= response.response;
                 data = response.data;
                 break;
-            case "keys":
+            case "KEYS":
                 res = keys(command);
                 break;
             default:
