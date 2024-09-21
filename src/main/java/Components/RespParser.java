@@ -33,7 +33,7 @@ public class RespParser {
 
         String _data = new String(command, StandardCharsets.UTF_8);
         char[] dataArr = _data.toCharArray();
-        System.out.println("control reached here ======================================================");
+
 
 //        String[] commands = _data.split("\\*");
 
@@ -67,6 +67,7 @@ public class RespParser {
                 }
             }
         }
+        System.out.println("control reached here ======================================================");
         for(String[] a:res){
             System.out.println("``````````````````````````````````````````````````````````````````");
             for(String b:a){
