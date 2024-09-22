@@ -47,10 +47,13 @@ public class RdbParser {
     }
 
     private void parseHeader(DataInputStream data) throws IOException {
+        System.out.println("header =============================== header");
         byte[] header = new byte[9];
         data.readFully(header);
         String headerStr = new String(header, ASCII);
         redisConfig.header = headerStr;
+        System.out.println(headerStr);
+        System.out.println("header =============================== header");
         String redis = headerStr.substring(0, 5);
         int version = Integer.parseInt(headerStr.substring(5));
         if (!redis.equals("REDIS")) {
