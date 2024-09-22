@@ -1,13 +1,17 @@
 package Components;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -19,14 +23,17 @@ public class CommandHandler {
     private final Store store;
     private final RedisConfig config;
     private final Infra infra;
+    private final RdbParser rdbParser;
     private int slaveId = 0;
 
-    public CommandHandler(Store store, RespParser parser, RedisConfig config, Infra infra)
+    @Autowired
+    public CommandHandler(Store store, RespParser parser, RedisConfig config, Infra infra, RdbParser rdbParser)
     {
         this.infra = infra;
         this.parser = parser;
         this.store = store;
         this.config = config;
+        this.rdbParser = rdbParser;
     }
 
 
@@ -85,9 +92,15 @@ public class CommandHandler {
     }
 
     public String keys(String[] command) {
-        String pattern = command[1];
-        System.out.println("pattern ==========================================="+pattern);
-        return "";
+        String want = command[1];
+        String regex = want.replace("*", ".*").replace("?", ".");
+        Pattern pattern = Pattern.compile(regex);
+        List<String> keys = store.getKeys();
+        keys = keys.stream().filter(x->{
+            Matcher matcher = pattern.matcher(x);
+            return matcher.matches();
+        }).toList();
+        return parser.RespArray(keys.toArray(new String[keys.size()]));
     }
 
     public String Set(Client client, String[] command){
@@ -209,8 +222,43 @@ public class CommandHandler {
             String replicationOffsetMaster = command[2];
 
             if (replicationIdMaster.equals("?") && replicationOffsetMaster.equals("-1")) {
-                String emptyRdbFileBase64 =
+                String emptyRdbFileBase64=
                         "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
+
+                if(config.dir !=null && config.dbfilename!=null){
+                    String filePath = config.dir+"/"+config.dbfilename;
+                    File file = new File(filePath);
+                    if (!file.exists() && file.isDirectory()) {
+                        System.out.println("--------------------------------------------RDB file not found sending placeholder empty");
+                    }
+                    else{
+                        try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
+                            try(BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream))) {
+                                String line;
+                                StringBuilder stringBuilder = new StringBuilder();
+                                while ((line = reader.readLine()) != null) {
+                                    stringBuilder.append(line).append("\n");
+                                }
+
+                                String result = stringBuilder.toString();
+                                emptyRdbFileBase64 = result;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            rdbParser.parse(dataStream);
+                            dataStream.close();
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+
+
+
+
 
                 byte[] rdbFile = Base64.getDecoder().decode(emptyRdbFileBase64);  // Decode the Base64 string
 
@@ -244,17 +292,17 @@ public class CommandHandler {
         Instant start = Instant.now();
         switch (cmd)
         {
-            case "set":
+            case "SET":
                 res = store.Set(command);
                 CompletableFuture.runAsync(()->sendCommandToSlaves(infra.slaves,command));
                 break;
 
-            case "ping":
+            case "PING":
                 System.out.println("-------------------------------------------");
                 System.out.println("pinged");
                 break;
 
-            case "replconf":
+            case "REPLCONF":
                 res = ReplConfSlave(command);
                 break;
 

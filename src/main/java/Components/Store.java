@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -16,6 +18,10 @@ public class Store {
 
     public Store() {
         map = new ConcurrentHashMap<>();
+    }
+
+    public List<String> getKeys(){
+        return new ArrayList<>(map.keySet());
     }
 
     public String Set(String[] command){
