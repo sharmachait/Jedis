@@ -30,6 +30,12 @@ public class RdbParser {
         KeyValuePair next = new KeyValuePair();
         List<KeyValuePair> pairs = new ArrayList<>();
         System.out.println("post header ------------------------------------ post header");
+        System.out.println("EOF "+EOF);
+        System.out.println("SELECTDB "+SELECTDB);
+        System.out.println("EXPIRETIME "+EXPIRETIME);
+        System.out.println("EXPIRETIMEMS "+EXPIRETIMEMS);
+        System.out.println("RESIZEDB "+RESIZEDB);
+        System.out.println("AUX "+AUX);
         while(data.available() > 0) {
             System.out.println(data.readByte());
         }
