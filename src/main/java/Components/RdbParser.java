@@ -38,6 +38,7 @@ public class RdbParser {
         System.out.println("AUX "+AUX);
         while(data.available() > 0) {
             System.out.println(data.readByte());
+            break;
         }
 //        while(data.available()>0){
 //            int type = data.readByte();
