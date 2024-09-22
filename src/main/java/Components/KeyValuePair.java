@@ -1,0 +1,59 @@
+package Components;
+import java.sql.Timestamp;
+import java.time.temporal.ValueRange;
+
+public class KeyValuePair {
+    String key;
+    Value type;
+    Object value;
+    Timestamp expiryTime;
+
+    public KeyValuePair() {}
+
+//    public KeyValuePair(String key, Object value, ValueType type, String id) {
+//        this.key = key;
+//        this.value = value;
+//        this.type = type;
+//    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Value getType() {
+        return type;
+    }
+
+    public void setType(Value type) {
+        this.type = type;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Timestamp getExpiryTime() {
+        return expiryTime;
+    }
+
+    public void setExpiryTime(Timestamp expiryTime) {
+        this.expiryTime = expiryTime;
+    }
+
+    public boolean isNumerical() {
+        try {
+            Integer.parseInt(value.toString());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+}
