@@ -4,7 +4,7 @@ import java.time.temporal.ValueRange;
 
 public class KeyValuePair {
     String key;
-    Value type;
+    ValueType type;
     Object value;
     Timestamp expiryTime;
 
@@ -24,11 +24,11 @@ public class KeyValuePair {
         this.key = key;
     }
 
-    public Value getType() {
+    public ValueType getType() {
         return type;
     }
 
-    public void setType(Value type) {
+    public void setType(ValueType type) {
         this.type = type;
     }
 

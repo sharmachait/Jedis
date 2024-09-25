@@ -1,9 +1,11 @@
+import Components.KeyValuePair;
 import Components.RdbParser;
 import Components.RedisConfig;
 import Components.TcpServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.*;
+import java.util.List;
 
 public class Main {
   public static void main(String[] args){
@@ -47,7 +49,10 @@ public class Main {
       }
 
       try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
-          rdbParser.parse(dataStream);
+          List<KeyValuePair> data = rdbParser.parse(dataStream);
+          for(KeyValuePair kvp : data){
+              System.out.println(kvp.getKey()+":"+kvp.getValue().toString());
+          }
           dataStream.close();
       } catch (FileNotFoundException e) {
           throw new RuntimeException(e);
