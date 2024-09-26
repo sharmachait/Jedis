@@ -72,7 +72,9 @@ public class Main {
   }
   private static void populateStore(List<KeyValuePair> data, Store store){
       for(KeyValuePair kvp : data){
-          LocalDateTime expiry = kvp.getExpiryTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+          LocalDateTime expiry = LocalDateTime.of(999999999, 12, 31, 23, 59, 59, 999999999);
+          if(kvp.getExpiryTime() != null)
+            expiry = kvp.getExpiryTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
           String val = kvp.getValue().toString();
           LocalDateTime curr = LocalDateTime.now();
           Value value = new Value(val, curr, expiry);
