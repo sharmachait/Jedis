@@ -44,22 +44,24 @@ public class Main {
 
       if (!file.exists() || file.isDirectory()) {
           System.out.println("RDB file not found");
-          return;
+      }
+      else{
+          try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
+              List<KeyValuePair> data = rdbParser.parse(dataStream);
+              for(KeyValuePair kvp : data){
+                  System.out.println(kvp.getKey()+":"+kvp.getValue().toString());
+              }
+              Store store = context.getBean(Store.class);
+              populateStore(data, store);
+              dataStream.close();
+          } catch (FileNotFoundException e) {
+              throw new RuntimeException(e);
+          } catch (IOException e) {
+              throw new RuntimeException(e);
+          }
       }
 
-      try (DataInputStream dataStream = new DataInputStream(new FileInputStream(filePath))) {
-          List<KeyValuePair> data = rdbParser.parse(dataStream);
-          for(KeyValuePair kvp : data){
-              System.out.println(kvp.getKey()+":"+kvp.getValue().toString());
-          }
-          Store store = context.getBean(Store.class);
-          populateStore(data, store);
-          dataStream.close();
-      } catch (FileNotFoundException e) {
-          throw new RuntimeException(e);
-      } catch (IOException e) {
-          throw new RuntimeException(e);
-      }
+
 
       TcpServer app =context.getBean(TcpServer.class);
 
