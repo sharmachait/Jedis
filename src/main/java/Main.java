@@ -42,7 +42,7 @@ public class Main {
       String filePath = config.dir+"/"+config.dbfilename;
       File file = new File(filePath);
 
-      if (!file.exists() && file.isDirectory()) {
+      if (!file.exists() || file.isDirectory()) {
           System.out.println("RDB file not found");
           return;
       }
