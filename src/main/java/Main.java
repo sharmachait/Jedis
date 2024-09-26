@@ -1,10 +1,9 @@
-import Components.KeyValuePair;
-import Components.RdbParser;
-import Components.RedisConfig;
-import Components.TcpServer;
+import Components.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class Main {
@@ -53,6 +52,8 @@ public class Main {
           for(KeyValuePair kvp : data){
               System.out.println(kvp.getKey()+":"+kvp.getValue().toString());
           }
+          Store store = context.getBean(Store.class);
+          populateStore(data, store);
           dataStream.close();
       } catch (FileNotFoundException e) {
           throw new RuntimeException(e);
@@ -67,6 +68,15 @@ public class Main {
       }
       else {
           app.StartSlave();
+      }
+  }
+  private static void populateStore(List<KeyValuePair> data, Store store){
+      for(KeyValuePair kvp : data){
+          LocalDateTime expiry = kvp.getExpiryTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+          String val = kvp.getValue().toString();
+          LocalDateTime curr = LocalDateTime.now();
+          Value value = new Value(val, curr, expiry);
+          store.map.put(kvp.getKey(), value);
       }
   }
 }

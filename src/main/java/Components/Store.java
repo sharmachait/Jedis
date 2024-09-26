@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class Store {
 
-    private ConcurrentHashMap<String,Value> map;
+    public ConcurrentHashMap<String,Value> map;
 
     public Store() {
         map = new ConcurrentHashMap<>();
