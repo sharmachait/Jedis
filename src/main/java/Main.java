@@ -1,33 +1,44 @@
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import Components.Server.MasterTcpServer;
+import Components.Server.RedisConfig;
+import Components.Server.SlaveTcpServer;
+import Config.AppConfig;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 
 public class Main {
-  public static void main(String[] args){
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    System.out.println("Logs from your program will appear here!");
+    public static void main(String[] args){
+        AnnotationConfigApplicationContext context =
+              new AnnotationConfigApplicationContext(AppConfig.class);
+        MasterTcpServer master = context.getBean(MasterTcpServer.class);
+        SlaveTcpServer slave = context.getBean(SlaveTcpServer.class);
+        RedisConfig redisConfig = context.getBean(RedisConfig.class);
+        int port = 6379;
+        redisConfig.setPort(port);
+        redisConfig.setRole("master");
+        for(int i=0;i<args.length;i++){
 
-    //  Uncomment the code below to pass the first stage
-    //    ServerSocket serverSocket = null;
-    //    Socket clientSocket = null;
-    //    int port = 6379;
-    //    try {
-    //      serverSocket = new ServerSocket(port);
-    //      // Since the tester restarts your program quite often, setting SO_REUSEADDR
-    //      // ensures that we don't run into 'Address already in use' errors
-    //      serverSocket.setReuseAddress(true);
-    //      // Wait for connection from client.
-    //      clientSocket = serverSocket.accept();
-    //    } catch (IOException e) {
-    //      System.out.println("IOException: " + e.getMessage());
-    //    } finally {
-    //      try {
-    //        if (clientSocket != null) {
-    //          clientSocket.close();
-    //        }
-    //      } catch (IOException e) {
-    //        System.out.println("IOException: " + e.getMessage());
-    //      }
-    //    }
-  }
+            switch(args[i]){
+                case "--port":
+                    port = Integer.parseInt(args[i+1]);
+                    redisConfig.setPort(port);
+                    break;
+                case "--replicaof":
+                    redisConfig.setRole("slave");
+//                    "<MASTER_HOST> <MASTER_PORT>"
+                    String masterHost = args[i+1].split(" ")[0];
+                    int masterPort = Integer.parseInt(args[i+1].split(" ")[1]);
+
+                    redisConfig.setMasterHost(masterHost);
+                    redisConfig.setMasterPort(masterPort);
+
+                    break;
+            }
+        }
+
+        if(redisConfig.getRole().equals("slave")){
+            slave.startServer();
+        }else{
+            master.startServer();
+        }
+    }
 }
