@@ -14,12 +14,12 @@ class RespSerializerTest {
         String ping = "*1\r\n$4\r\nPING\r\n";
         List<String[]> commands = respSerializer.deseralize(ping.getBytes(StandardCharsets.UTF_8));
 
-        for(String[] s : commands){
-            System.out.println("=====================================================================================");
-            for(String ss: s){
-                System.out.print(ss+" ");
-            }
-        }
+       // for(String[] s : commands){
+//            System.out.println("=====================================================================================");
+    //        for(String ss: s){
+      //          System.out.print(ss+" ");
+        //    }
+        //}
         assertEquals(1, commands.size());
         assertEquals(1, commands.get(0).length);
         assertEquals("PING", commands.get(0)[0]);
@@ -29,13 +29,13 @@ class RespSerializerTest {
         //"\u0000"
         String multipleCommands = "*2\r\n*3\r\n$3\r\nset\r\n$3\r\nkey\r\n$5\r\nvalue\r\n*3\r\n$3\r\nset\r\n$3\r\nkey\r\n$5\r\nvalue\u0000";
         List<String[]> commands = respSerializer.deseralize(multipleCommands.getBytes(StandardCharsets.UTF_8));
-        System.out.println(commands.size());
-        for(String[] s : commands){
-            System.out.println("=====================================================================================");
-            for(String ss: s){
-                System.out.print(ss+" ");
-            }
-        }
+       // System.out.println(commands.size());
+        //for(String[] s : commands){
+  //          System.out.println("=====================================================================================");
+          //  for(String ss: s){
+            //    System.out.print(ss+" ");
+           // }
+       // }
         assertEquals(2, commands.size());
         assertEquals(3, commands.get(0).length);
         assertEquals(3, commands.get(1).length);
