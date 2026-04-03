@@ -237,7 +237,8 @@ public class SlaveTcpServer {
 
     private void handleClient(Client client) throws IOException {
         connectionPool.addClient(client);
-        while(client.socket.isConnected()){
+        //while(client.socket.isConnected()){
+        while(true){
             byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
             int bytesRead = client.inputStream.read(buffer);
 
@@ -248,6 +249,9 @@ public class SlaveTcpServer {
                 for(String[] command :commands){
                     handleCommand(command, client);
                 }
+            } else if(bytesRead == -1) {
+              // Client disconnected;
+              break;
             }
         }
         connectionPool.removeClient(client);
