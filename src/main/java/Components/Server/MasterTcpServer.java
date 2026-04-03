@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +42,8 @@ public class MasterTcpServer {
     private ConnectionPool connectionPool;
     @Autowired
     private Store store;
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     public void startServer(){
         ServerSocket serverSocket = null;
         Socket clientSocket = null;
@@ -57,7 +61,7 @@ public class MasterTcpServer {
                 OutputStream outputStream = clientSocket.getOutputStream();
 
                 Client client = new Client(finalClientSocket, inputStream, outputStream, id );
-                CompletableFuture.runAsync(() -> {
+                executorService.submit(() -> {
                     try {
                         handleClient(client);
                     } catch (IOException e) {
@@ -70,6 +74,7 @@ public class MasterTcpServer {
             logger.log(Level.SEVERE, e.getMessage());
         } finally {
             try {
+                executorService.shutdown();
                 if (clientSocket != null) {
                     clientSocket.close();
                 }
