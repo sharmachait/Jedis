@@ -52,6 +52,7 @@ public class Store {
         try{
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime exp = now.plus(expiryMilliseconds, ChronoUnit.MILLIS);
+            System.out.println("======================================================================expiry at " + exp.toString());
             Value value = new Value(val, now, exp);
             map.put(key, value);
             return "+OK\r\n";
@@ -70,6 +71,7 @@ public class Store {
             Value value = map.get(key);
 
             if(value!=null && value.expiry.isBefore(now)){
+                System.out.println("=======================================expired==============================================");
                 map.remove(key);
                 return "$-1\r\n";
             }

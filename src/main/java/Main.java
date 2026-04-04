@@ -38,6 +38,7 @@ public class Main {
         if(redisConfig.getRole().equals("slave")){
             slave.startServer();
         }else{
+          System.out.println("Running master at " + redisConfig.getPort());
             master.startServer();
         }
     }

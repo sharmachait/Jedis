@@ -47,7 +47,11 @@ public class CommandHandler {
 
             int pxFlag = Arrays.stream(command).toList().indexOf("px");
             // -1
+            if(pxFlag == -1) {
+              pxFlag = Arrays.stream(command).toList().indexOf("PX");
+            }
             if(pxFlag > -1){
+              System.out.println("------------------------with px flag-------------------");
                 int delta = Integer.parseInt( command[ pxFlag + 1 ] );
                 return store.set(key, value, delta);
             }else{

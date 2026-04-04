@@ -102,7 +102,16 @@ public class MasterTcpServer {
         connectionPool.removeSlave(client);
     }
 
+    private void printCommand(String[] command){
+      System.out.println("=========================");
+      for(String s: command){
+        System.out.print(s+" ");
+      }
+      System.out.println("=========================");
+    }
+
     private void handleCommand(String[] command, Client client) throws IOException {
+      printCommand(command);
         if(!client.getTransactionalContext()){
             ResponseDto responseDto = caseHandler(command, client);
             client.send(responseDto);
@@ -192,6 +201,7 @@ public class MasterTcpServer {
             case "SET":
                 res = commandHandler.set(command);
                 String commandRespString = respSerializer.respArray(command);
+                System.out.println(commandRespString+"--------------------------------------------------------------------");
                 byte[] toCount = commandRespString.getBytes();
                 connectionPool.bytesSentToSlaves += toCount.length;
                 CompletableFuture.runAsync(()->propagate(command));
