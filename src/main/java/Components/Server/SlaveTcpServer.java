@@ -262,8 +262,17 @@ public class SlaveTcpServer {
         connectionPool.removeClient(client);
         connectionPool.removeSlave(client);
     }
+    private void printCommand(String[] command){
+      System.out.println("=========================");
+      for(String s: command){
+        System.out.print(s+" ");
+      }
+      System.out.println("=========================");
+    }
+
 
     private void handleCommand(String[] command, Client client) throws IOException {
+      printCommand(command);
         String res = "";
         byte[] data = null;
         switch (command[0].toUpperCase()){
