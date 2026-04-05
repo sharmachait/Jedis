@@ -84,6 +84,7 @@ public class SlaveTcpServer {
 
     private void initiateSlavery() {
         try(Socket master = new Socket(redisConfig.getMasterHost(), redisConfig.getMasterPort())){
+          System.out.println("---------------shaking hand with master------------------");
             InputStream inputStream = master.getInputStream();
             OutputStream outputStream = master.getOutputStream();
             byte[] inputBuffer = new byte[1024];
