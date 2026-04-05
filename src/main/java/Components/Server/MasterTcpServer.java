@@ -210,6 +210,7 @@ public class MasterTcpServer {
                 res = commandHandler.get(command);
                 break;
             case "INFO":
+                System.out.println("----------------------------master received the info command--------------");
                 res = commandHandler.info(command);
                 break;
             case "REPLCONF":
