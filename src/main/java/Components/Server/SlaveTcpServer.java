@@ -265,7 +265,7 @@ public class SlaveTcpServer {
     private void handleCommand(String[] command, Client client) throws IOException {
         String res = "";
         byte[] data = null;
-        switch (command[0]){
+        switch (command[0].toUpperCase()){
             case "PING":
                 res = commandHandler.ping(command);
                 break;
