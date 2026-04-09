@@ -47,9 +47,12 @@ public class SlaveTcpServer {
             serverSocket = new ServerSocket(port);
             serverSocket.setReuseAddress(true);
 
-            CompletableFuture<Void> slaveConnectionFuture = CompletableFuture.runAsync(this::initiateSlavery);
-            slaveConnectionFuture.thenRun(()->System.out.println("Replication completed"));
-
+            //CompletableFuture<Void> slaveConnectionFuture = CompletableFuture.runAsync(this::initiateSlavery);
+            //slaveConnectionFuture.thenRun(()->System.out.println("Replication completed"));
+            executorService.submit(()->{
+             initiateSlavery();
+             System.out.println("Replication completed");
+            });
             int id = 0;
             while (true) {
                 clientSocket = serverSocket.accept();
@@ -60,7 +63,7 @@ public class SlaveTcpServer {
                 OutputStream outputStream = clientSocket.getOutputStream();
 
                 Client client = new Client(finalClientSocket, inputStream, outputStream, id );
-                CompletableFuture.runAsync(() -> {
+                executorService.submit(() -> {
                     try {
                         handleClient(client);
                     } catch (IOException e) {
