@@ -2,6 +2,7 @@ package Components.Server;
 
 import Components.Infra.ConnectionPool;
 import Components.Infra.Slave;
+import Components.Repository.OptimisticLockException;
 import Components.Repository.Store;
 import Components.Repository.Value;
 import Components.Service.CommandHandler;
@@ -111,7 +112,6 @@ public class MasterTcpServer {
     }
 
     private void handleCommand(String[] command, Client client) throws IOException {
-      printCommand(command);
         if(!client.getTransactionalContext()){
             ResponseDto responseDto = caseHandler(command, client);
             client.send(responseDto);
@@ -128,6 +128,10 @@ public class MasterTcpServer {
     private void transactionController(String[] command, Client client) throws IOException {
         //control only comes here in the transaction context
         switch (command[0]){
+            case "WATCH":
+                String res = "-ERR WATCH inside MULTI is not allowed\r\n";
+                client.send(res);
+                break;
             case "EXEC":
                 if(client.commandQueue==null || client.commandQueue.isEmpty()){
                     client.send("*0\r\n");
@@ -138,22 +142,23 @@ public class MasterTcpServer {
                 Queue<String[]> commands = new LinkedList<>(client.commandQueue);
 
                 //execute the transaction
-                BiFunction<String[], Map<String, Value>, String> transactionCacheApplier = commandHandler.getTransactionCommandCacheApplier();
-                store.executeTransaction(client, transactionCacheApplier);
-
-                client.endTransaction();
-                while(!commands.isEmpty()){
-                    String[] commandToPropagate = commands.poll();
-                    String commandRespString = respSerializer.respArray(commandToPropagate);
-                    byte[] toCount = commandRespString.getBytes();
-                    connectionPool.bytesSentToSlaves += toCount.length;
-                    CompletableFuture.runAsync(()->propagate(commandToPropagate));
+                BiFunction<String[], Map<String, Value>, String> transactionCacheApplier = commandHandler.getTransactionCommandCacheApplier(client);
+                try{
+                    store.executeTransaction(client, transactionCacheApplier);
+                    while(!commands.isEmpty()){
+                        String[] commandToPropagate = commands.poll();
+                        String commandRespString = respSerializer.respArray(commandToPropagate);
+                        byte[] toCount = commandRespString.getBytes();
+                        connectionPool.bytesSentToSlaves += toCount.length;
+                        CompletableFuture.runAsync(()->propagate(commandToPropagate));
+                    }
+                    String response = respSerializer.respArray(client.transactionResponse);
+                    client.send(response);
+                } catch(OptimisticLockException e) {
+                  client.send("*-1\r\n");
+                } finally {
+                  client.endTransaction();
                 }
-
-                String response = respSerializer.respArray(client.transactionResponse);
-
-                client.send(response);
-
                 break;
             case "DISCARD":
                 client.endTransaction();
@@ -169,7 +174,7 @@ public class MasterTcpServer {
 
     private boolean isTransactionalControlCommand(String command) {
         return switch (command) {
-            case "EXEC", "DISCARD" -> true;
+            case "EXEC", "DISCARD", "WATCH" -> true;
             default -> false;
         };
     }
@@ -188,6 +193,9 @@ public class MasterTcpServer {
             case "DISCARD":
                 res = "-ERR DISCARD without MULTI\r\n";
                 break;
+            case "WATCH":
+                res = commandHandler.watch(command, client);
+                break;
             case "MULTI":
                 client.beginTransaction();
                 res = "+OK\r\n";
@@ -201,7 +209,6 @@ public class MasterTcpServer {
             case "SET":
                 res = commandHandler.set(command);
                 String commandRespString = respSerializer.respArray(command);
-                System.out.println(commandRespString+"--------------------------------------------------------------------");
                 byte[] toCount = commandRespString.getBytes();
                 connectionPool.bytesSentToSlaves += toCount.length;
                 CompletableFuture.runAsync(()->propagate(command));
@@ -210,7 +217,6 @@ public class MasterTcpServer {
                 res = commandHandler.get(command);
                 break;
             case "INFO":
-                System.out.println("----------------------------master received the info command--------------");
                 res = commandHandler.info(command);
                 break;
             case "REPLCONF":
@@ -239,11 +245,7 @@ public class MasterTcpServer {
         String commandRespString = respSerializer.respArray(command);
         try{
             for(Slave slave: connectionPool.getSlaves()){
-                System.out.println("========================= sending command down to slave ==============================");
-                System.out.println("command: "+commandRespString);
-                System.out.println(slave.connection.id);
                 InetAddress remoteAddress = slave.connection.socket.getInetAddress();
-                System.out.println("Remote IP address: " + remoteAddress.getHostAddress() +": "+slave.connection.socket.getPort());
 
                 slave.send(commandRespString.getBytes());
             }

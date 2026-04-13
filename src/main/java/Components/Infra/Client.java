@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
+import java.util.HashSet;
 
 public class Client {
     public Socket socket;
@@ -21,6 +23,15 @@ public class Client {
     public Queue<String[]> commandQueue;
     public List<String> transactionResponse; // the strings will be in resp format we just need to make a resp array out of it
 
+    public Set<String> watchSet;
+    public boolean isWatchSetInitiated(){
+      return this.watchSet!=null;
+    }
+    public void addToWatchSet(String key) {
+        if(!isWatchSetInitiated())
+          this.watchSet = new HashSet<>();
+        this.watchSet.add(key);
+    }
 
     public boolean getTransactionalContext(){return transactionalContext;}
 
@@ -36,6 +47,7 @@ public class Client {
     public void endTransaction(){
         commandQueue = null;
         transactionalContext=false;
+        watchSet = null;
     }
 
     public Client(Socket socket,

@@ -3,6 +3,7 @@ package Components.Service;
 import Components.Infra.Client;
 import Components.Infra.ConnectionPool;
 import Components.Infra.Slave;
+import Components.Repository.OptimisticLockException;
 import Components.Repository.Store;
 import Components.Repository.Value;
 import Components.Server.RedisConfig;
@@ -36,6 +37,13 @@ public class CommandHandler {
     public String ping(String[] command){
         return "+PONG\r\n";
     }
+    public String watch(String[] command, Client client){
+        for(int i=1; i< command.length; i++){
+            client.addToWatchSet(command[i]);
+            store.addWatcherForKey(command[i], client);
+        }
+        return "+OK\r\n";
+    }
     public String echo(String[] command){
         return respSerializer.serializeBulkString(command[1]);
     }
@@ -51,7 +59,6 @@ public class CommandHandler {
               pxFlag = Arrays.stream(command).toList().indexOf("PX");
             }
             if(pxFlag > -1){
-              System.out.println("------------------------with px flag-------------------");
                 int delta = Integer.parseInt( command[ pxFlag + 1 ] );
                 return store.set(key, value, delta);
             }else{
@@ -207,22 +214,32 @@ public class CommandHandler {
         }
         return res;
     }
-    public BiFunction<String[], Map<String, Value>, String> getTransactionCommandCacheApplier(){
+    public BiFunction<String[], Map<String, Value>, String> getTransactionCommandCacheApplier(Client client){
         final Store localStore = this.store;
         final RespSerializer localSerializer = this.respSerializer;
         return (String[] command, Map<String, Value> map)->{
+            isOptimisticLockViolated(client);                    
             String res = "";
             switch (command[0]) {
                 case "SET":
+                    if(this.store.isWatchedkey(command[1])){
+                        this.store.addToFailTransactionForExcept(command[1], client);
+                    }
                     res = handleSetCommandTransactional(command, map, localSerializer, localStore);
                     break;
                 case "GET":
                     res = handleGetCommandTransactional(command, map, localSerializer, localStore);
                     break;
                 case "INCR":
+                    if(this.store.isWatchedkey(command[1])){
+                        this.store.addToFailTransactionForExcept(command[1], client);
+                    }
                     res = handleIncrCommandTransactional(command, map, localSerializer, localStore);
                     break;
                 case "DEL":
+                    if(this.store.isWatchedkey(command[1])){
+                        this.store.addToFailTransactionForExcept(command[1], client);
+                    }
                     res = handleDelCommandTransactional(command, map, localSerializer, localStore);
                     break;
                 default:
@@ -231,6 +248,14 @@ public class CommandHandler {
             }
             return res;
         };
+    }
+
+    private void isOptimisticLockViolated(Client client){
+        if(this.store.failTransactionFor.contains(client.id)){
+          this.store.failTransactionFor.remove(client.id);
+          client.endTransaction();
+          throw new OptimisticLockException();
+        } 
     }
 
     private String handleDelCommandTransactional(String[] command, Map<String, Value> map, RespSerializer localSerializer, Store localStore) {

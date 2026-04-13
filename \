@@ -4,8 +4,6 @@ import Components.Infra.Client;
 import Components.Service.RespSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.awt.RenderingHints.Key;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -21,24 +19,14 @@ public class Store {
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
     public ConcurrentHashMap<String, Value> map;
     public ConcurrentHashMap<String, Set<Integer>> watchingClientsListForKeys;
-    public Set<Integer> failTransactionFor;
     @Autowired
     public RespSerializer respSerializer;
     public Store(){
         map = new ConcurrentHashMap<>();
         watchingClientsListForKeys = new ConcurrentHashMap<>();
-        failTransactionFor = ConcurrentHashMap.newKeySet();
     }
     public boolean isWatchedkey(String key){
       return watchingClientsListForKeys.containsKey(key);    
-    }
-    public void addToFailTransactionForExcept(String key, Client currentClient){
-        Set<Integer> watchers = watchingClientsListForKeys.getOrDefault(key, new HashSet<>());
-        for(int id: watchers){
-            if(id != currentClient.id) {
-              this.failTransactionFor.add(id);
-            }
-        }
     }
     public Set<String> getKeys(){
         rwLock.readLock().lock();

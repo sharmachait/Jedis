@@ -36,10 +36,8 @@ public class Main {
         }
 
         if(redisConfig.getRole().equals("slave")){
-          System.out.println("--------------- replicating from master at "+redisConfig.getMasterHost() + " "+redisConfig.getMasterPort()+"-------------------------");
             slave.startServer();
         }else{
-          System.out.println("Running master at " + redisConfig.getPort());
             master.startServer();
         }
     }

@@ -87,7 +87,6 @@ public class SlaveTcpServer {
 
     private void initiateSlavery() {
         try(Socket master = new Socket(redisConfig.getMasterHost(), redisConfig.getMasterPort())){
-          System.out.println("---------------shaking hand with master------------------");
             InputStream inputStream = master.getInputStream();
             OutputStream outputStream = master.getOutputStream();
             byte[] inputBuffer = new byte[1024];
@@ -190,10 +189,6 @@ public class SlaveTcpServer {
     }
 
     private String handleCommandFromMaster(String[] command, Client master) {
-        System.out.println("================================= received command from master =================================");
-        for(String c: command){
-            System.out.print(c+" ");
-        }
         String cmd = command[0];
         cmd = cmd.toUpperCase();
 
@@ -217,11 +212,7 @@ public class SlaveTcpServer {
         String commandRespString = respSerializer.respArray(command);
         try{
             for(Slave slave: connectionPool.getSlaves()){
-                System.out.println("========================= sending command down to slave ==============================");
-                System.out.println("command: "+commandRespString);
-                System.out.println(slave.connection.id);
                 InetAddress remoteAddress = slave.connection.socket.getInetAddress();
-                System.out.println("Remote IP address: " + remoteAddress.getHostAddress() +": "+slave.connection.socket.getPort());
                 slave.send(commandRespString.getBytes());
             }
         } catch (IOException e) {
@@ -275,7 +266,6 @@ public class SlaveTcpServer {
 
 
     private void handleCommand(String[] command, Client client) throws IOException {
-      printCommand(command);
         String res = "";
         byte[] data = null;
         switch (command[0].toUpperCase()){
