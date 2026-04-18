@@ -176,7 +176,10 @@ public class Store {
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
                 responses.add(response);
-            }
+            }System.out.println("control came here execute transaction");
+                    client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
+                    System.out.println("control came here execute transaction");
+
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
                 String key = entry.getKey();
@@ -187,13 +190,16 @@ public class Store {
                 }else{
                     this.map.put(key, value);
                 }
-            }
+            }System.out.println("control came here copy");
+                    client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
+                    System.out.println("control came here copy");
+
             for(String key: client.watchSet) {
                 removeWatcherForKey(key, client);
             }
-                    System.out.println("control came here execute transaction");
+                    System.out.println("control came here remove watcher");
                     client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
-                    System.out.println("control came here execute transaction");
+                    System.out.println("control came here remove watcher");
             client.transactionResponse.addAll(responses);
         }finally {
             rwLock.writeLock().unlock();
