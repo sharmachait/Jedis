@@ -263,7 +263,7 @@ public class CommandHandler {
                     break;
             }
             System.out.println("getTransactionCommandCacheApplier response");
-            System.out.println(res);
+            System.out.println(res.replace("\r", "\\r").replace("\n", "\\n"));
             return res;
         };
     }
@@ -303,10 +303,8 @@ public class CommandHandler {
             Store localStore) {
         try{
             String key = command[1];
-            System.out.println("key ----- " + key);
             Value valueToUse;
             Value cachedValue = map.getOrDefault(key, null);
-            System.out.println("cachedValue ----- " + cachedValue);
             if(cachedValue==null){
                 Value storeValue = localStore.getValue(key);
                 if(storeValue==null) {
@@ -317,13 +315,10 @@ public class CommandHandler {
             }else{
                 valueToUse=cachedValue;
             }
-            System.out.println("Value to use ------ " + valueToUse);
             int val = Integer.parseInt(valueToUse.val);
             val++;
             valueToUse.val = String.valueOf(val);
-            System.out.println("Updated value to use ----- " + valueToUse);
             map.put(key, valueToUse);
-            System.out.println(respSerializer.respInteger(val).replace("\r", "\\r").replace("\n", "\\n"));
             return respSerializer.respInteger(val);
         } catch (Exception e) {
             return "-ERR value is not an integer or out of range\r\n";

@@ -152,7 +152,11 @@ public class MasterTcpServer {
                         connectionPool.bytesSentToSlaves += toCount.length;
                         CompletableFuture.runAsync(()->propagate(commandToPropagate));
                     }
+                    for(String s: client.transactionResponse) {
+                      System.out.println(s.replace("\r", "\\r").replace("\n", "\\n"));
+                    }
                     String response = respSerializer.respArray(client.transactionResponse);
+                    System.out.println(response);
                     System.out.println("RESPONSE");
                     client.send(response);
                 } catch(OptimisticLockException e) {
