@@ -53,6 +53,10 @@ public class CommandHandler {
             String key = command[1];
             String value = command[2];
 
+            if(this.store.isWatchedkey(key)){
+                this.store.addToFailTransactionFor(key);
+            }
+
             int pxFlag = Arrays.stream(command).toList().indexOf("px");
             // -1
             if(pxFlag == -1) {
@@ -197,6 +201,10 @@ public class CommandHandler {
         String key =command[1];
         String res = "";
         try{
+            if(this.store.isWatchedkey(key)){
+                this.store.addToFailTransactionFor(key);
+            }
+
             Value value = store.getValue(key);
             if(value == null){
                 store.set(key, "0");

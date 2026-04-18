@@ -40,6 +40,13 @@ public class Store {
             }
         }
     }
+
+    public void addToFailTransactionFor(String key){
+        Set<Integer> watchers = watchingClientsListForKeys.getOrDefault(key, new HashSet<>());
+        for(int id: watchers){
+            this.failTransactionFor.add(id);
+        }
+    }
     public Set<String> getKeys(){
         rwLock.readLock().lock();
         try{
