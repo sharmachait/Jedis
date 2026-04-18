@@ -156,7 +156,7 @@ public class MasterTcpServer {
                       System.out.println(s.replace("\r", "\\r").replace("\n", "\\n"));
                     }
                     String response = respSerializer.respArray(client.transactionResponse);
-                    System.out.println(response);
+                    System.out.println(response.replace("\r", "\\r").replace("\n", "\\n"));
                     System.out.println("RESPONSE");
                     client.send(response);
                 } catch(OptimisticLockException e) {
