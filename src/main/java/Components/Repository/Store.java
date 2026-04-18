@@ -178,6 +178,8 @@ public class Store {
                 responses.add(response);
             }
                     System.out.println("control came here execute transaction");
+                    responses.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
+                    System.out.println("control came here execute transaction");
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
                 String key = entry.getKey();

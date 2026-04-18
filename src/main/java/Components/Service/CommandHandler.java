@@ -233,7 +233,6 @@ public class CommandHandler {
         final Store localStore = this.store;
         final RespSerializer localSerializer = this.respSerializer;
         return (String[] command, Map<String, Value> map)->{
-            printCommand(command);            
             isOptimisticLockViolated(client);                    
             String res = "";
             switch (command[0]) {
