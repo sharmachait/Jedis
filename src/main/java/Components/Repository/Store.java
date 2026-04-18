@@ -172,11 +172,13 @@ public class Store {
         Map<String, Value> localCache = new HashMap<>();
         List<String> responses = new ArrayList<>();
         try{
+            System.out.println("33333333333333333333333333333333333");
             while(!client.commandQueue.isEmpty()){
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
                 responses.add(response);
             }
+            System.out.println("444444444444444444444444444444444444444");
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
 
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
