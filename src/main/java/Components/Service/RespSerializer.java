@@ -103,7 +103,7 @@ public class RespSerializer {
         sb.append(":");
         sb.append(i);
         sb.append("\r\n");
-        System.out.println(sb.toString());
+        System.out.println(sb.toString().replace("\r", "\\r").replace("\n", "\\n"));
         System.out.println("this line comes after sb to string");
         return sb.toString();
     }
