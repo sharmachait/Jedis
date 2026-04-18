@@ -171,6 +171,7 @@ public class Store {
         rwLock.writeLock().lock();
         Map<String, Value> localCache = new HashMap<>();
         List<String> responses = new ArrayList<>();
+                    System.out.println("control came here");
         try{
             while(!client.commandQueue.isEmpty()){
                 String[] command = client.commandQueue.poll();
