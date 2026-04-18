@@ -175,8 +175,8 @@ public class Store {
             System.out.println("33333333333333333333333333333333333");
             while(!client.commandQueue.isEmpty()){
                 String[] command = client.commandQueue.poll();
-                System.out.println("================");
                 String response = transactionCacheApplier.apply(command, localCache);
+                System.out.println("================ response");
                 System.out.println("----------------" + response);
                 responses.add(response);
             }
