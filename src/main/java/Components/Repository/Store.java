@@ -198,11 +198,12 @@ public class Store {
             }System.out.println("control came here copy");
                     client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
                     System.out.println("control came here copy");
-
-            for(String key: client.watchSet) {
-                removeWatcherForKey(key, client);
+            if(client.watchSet!=null){
+                for(String key: client.watchSet) {
+                    removeWatcherForKey(key, client);
+                }
             }
-                    System.out.println("control came here remove watcher");
+                                System.out.println("control came here remove watcher");
                     client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
                     System.out.println("control came here remove watcher");
             client.transactionResponse.addAll(responses);
