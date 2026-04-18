@@ -171,13 +171,13 @@ public class Store {
         rwLock.writeLock().lock();
         Map<String, Value> localCache = new HashMap<>();
         List<String> responses = new ArrayList<>();
-                    System.out.println("control came here");
         try{
             while(!client.commandQueue.isEmpty()){
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
                 responses.add(response);
             }
+                    System.out.println("control came here execute transaction");
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
                 String key = entry.getKey();
