@@ -13,4 +13,8 @@ public class Value {
         this.expiry = expiry;
         this.isDeletedInTransaction = false;
     }
+    @Override
+    public String toString(){
+      return val;
+    }
 }

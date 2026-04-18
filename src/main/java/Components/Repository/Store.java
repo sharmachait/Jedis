@@ -180,7 +180,10 @@ public class Store {
             }
             System.out.println("444444444444444444444444444444444444444");
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
-
+System.out.println("MAP");
+System.out.println(map);
+System.out.println("TRANSACTION CACHE");
+System.out.println(localCache);
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
                 String key = entry.getKey();
                 Value value = entry.getValue();
@@ -191,6 +194,8 @@ public class Store {
                     this.map.put(key, value);
                 }
             }
+            System.out.println("MAP updated");
+            System.out.println(map);
             for(String key: client.watchSet) {
                 removeWatcherForKey(key, client);
             }
