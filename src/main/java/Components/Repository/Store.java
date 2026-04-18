@@ -194,6 +194,7 @@ public class Store {
             for(String key: client.watchSet) {
                 removeWatcherForKey(key, client);
             }
+            System.out.println(responses);
             client.transactionResponse.addAll(responses);
         }finally {
             rwLock.writeLock().unlock();
