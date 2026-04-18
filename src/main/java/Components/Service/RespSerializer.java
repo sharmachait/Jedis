@@ -98,6 +98,7 @@ public class RespSerializer {
     }
 
     public String respInteger(int i){
+      System.out.println(i);
         StringBuilder sb = new StringBuilder();
         sb.append(":");
         sb.append(i);
