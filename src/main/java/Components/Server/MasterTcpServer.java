@@ -145,6 +145,7 @@ public class MasterTcpServer {
                 BiFunction<String[], Map<String, Value>, String> transactionCacheApplier = commandHandler.getTransactionCommandCacheApplier(client);
                 try{
                     store.executeTransaction(client, transactionCacheApplier);
+                    System.out.println("control came here");
                     while(!commands.isEmpty()){
                         String[] commandToPropagate = commands.poll();
                         String commandRespString = respSerializer.respArray(commandToPropagate);
