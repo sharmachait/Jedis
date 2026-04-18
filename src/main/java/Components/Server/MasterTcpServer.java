@@ -153,6 +153,7 @@ public class MasterTcpServer {
                         CompletableFuture.runAsync(()->propagate(commandToPropagate));
                     }
                     String response = respSerializer.respArray(client.transactionResponse);
+                    System.out.println("RESPONSE");
                     client.send(response);
                 } catch(OptimisticLockException e) {
                   client.send("*-1\r\n");
