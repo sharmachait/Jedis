@@ -172,23 +172,12 @@ public class Store {
         Map<String, Value> localCache = new HashMap<>();
         List<String> responses = new ArrayList<>();
         try{
-            System.out.println("33333333333333333333333333333333333");
             while(!client.commandQueue.isEmpty()){
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
-                System.out.println(response == null);
-                System.out.println(response.isEmpty());
-                System.out.println(response.isBlank());
-                System.out.println("================ response");
-                System.out.println("----------------" + response);
                 responses.add(response);
             }
-            System.out.println("444444444444444444444444444444444444444");
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
-System.out.println("MAP");
-System.out.println(map);
-System.out.println("TRANSACTION CACHE");
-System.out.println(localCache);
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
                 String key = entry.getKey();
                 Value value = entry.getValue();
@@ -199,12 +188,9 @@ System.out.println(localCache);
                     this.map.put(key, value);
                 }
             }
-            System.out.println("MAP updated");
-            System.out.println(map);
             for(String key: client.watchSet) {
                 removeWatcherForKey(key, client);
             }
-            System.out.println(responses);
             client.transactionResponse.addAll(responses);
         }finally {
             rwLock.writeLock().unlock();
