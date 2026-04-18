@@ -75,18 +75,23 @@ public class Store {
     }
 
     public boolean removeWatcherForKey(String key, Client watcher) {
+      System.out.println("getting lock");
         rwLock.writeLock().lock();
+        System.out.println("got lock");
         try{
             Set<Integer> watchers = watchingClientsListForKeys.getOrDefault(key, null);
             if (watchers == null){
                 return true;
             }
             watchers.remove(watcher.id);
+            System.out.println(watchingClientsListForKeys);
+            System.out.println("removed watcher");
             if(watchers.isEmpty()){
               watchingClientsListForKeys.remove(key);
             }else{
               watchingClientsListForKeys.put(key, watchers);
             }
+            System.out.println(watchingClientsListForKeys);
             return true;
         } catch(Exception e){
             logger.log(Level.SEVERE, e.getMessage());
