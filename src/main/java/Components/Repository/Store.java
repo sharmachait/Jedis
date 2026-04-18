@@ -177,6 +177,8 @@ public class Store {
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
                 System.out.println(response == null);
+                System.out.println(response.isEmpty());
+                System.out.println(response.isBlank());
                 System.out.println("================ response");
                 System.out.println("----------------" + response);
                 responses.add(response);
