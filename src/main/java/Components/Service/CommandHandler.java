@@ -262,7 +262,8 @@ public class CommandHandler {
                     res = "-ERR unknown command '"+command[0]+"'\r\n";
                     break;
             }
-            System.out.println("getTransactionCommandCacheApplier response" + res);
+            System.out.println("getTransactionCommandCacheApplier response");
+            System.out.println(res);
             return res;
         };
     }
