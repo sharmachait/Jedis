@@ -98,13 +98,10 @@ public class RespSerializer {
     }
 
     public String respInteger(int i){
-      System.out.println("before sb" + i);
         StringBuilder sb = new StringBuilder();
         sb.append(":");
         sb.append(i);
         sb.append("\r\n");
-        System.out.println(sb.toString().replace("\r", "\\r").replace("\n", "\\n"));
-        System.out.println("this line comes after sb to string");
         return sb.toString();
     }
 

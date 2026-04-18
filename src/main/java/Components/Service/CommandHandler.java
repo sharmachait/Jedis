@@ -323,7 +323,7 @@ public class CommandHandler {
             valueToUse.val = String.valueOf(val);
             System.out.println("Updated value to use ----- " + valueToUse);
             map.put(key, valueToUse);
-            System.out.println(respSerializer.respInteger(val));
+            System.out.println(respSerializer.respInteger(val).replace("\r", "\\r").replace("\n", "\\n"));
             return respSerializer.respInteger(val);
         } catch (Exception e) {
             return "-ERR value is not an integer or out of range\r\n";
