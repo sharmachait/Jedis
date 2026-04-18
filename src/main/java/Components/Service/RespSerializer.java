@@ -104,6 +104,7 @@ public class RespSerializer {
         sb.append(i);
         sb.append("\r\n");
         System.out.println(sb.toString());
+        System.out.println("this line comes after sb to string");
         return sb.toString();
     }
 
