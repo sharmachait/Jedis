@@ -133,7 +133,6 @@ public class MasterTcpServer {
                 client.send(res);
                 break;
             case "EXEC":
-                System.out.println("111111111111111111111111111111111111111111111111111");
                 if(client.commandQueue==null || client.commandQueue.isEmpty()){
                     client.send("*0\r\n");
                     client.endTransaction();

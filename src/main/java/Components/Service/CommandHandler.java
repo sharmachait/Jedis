@@ -223,11 +223,9 @@ public class CommandHandler {
         return res;
     }
     private void printCommand(String[] command){
-      System.out.println("=========================");
       for(String s: command){
         System.out.print(s+" ");
       }
-      System.out.println("=========================");
     }
 
 
@@ -235,7 +233,6 @@ public class CommandHandler {
         final Store localStore = this.store;
         final RespSerializer localSerializer = this.respSerializer;
         return (String[] command, Map<String, Value> map)->{
-            System.out.println("22222222222222222222222222222222222222");
             printCommand(command);            
             isOptimisticLockViolated(client);                    
             String res = "";
