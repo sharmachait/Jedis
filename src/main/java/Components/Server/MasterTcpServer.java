@@ -171,6 +171,8 @@ public class MasterTcpServer {
                         store.removeWatcherForKey(key, client);
                     }
                 }
+                if(store.failTransactionFor.contains(client.id))
+                    store.failTransactionFor.remove(client.id);
 
                 client.endTransaction();
                 client.send("+OK\r\n");
