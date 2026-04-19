@@ -72,6 +72,7 @@ public class SlaveTcpServer {
         } catch (IOException e) {
           System.out.println(e.getMessage());
         } finally {
+            executorService.shutdown();
             try {
                 if (clientSocket != null) {
                     clientSocket.close();
@@ -187,7 +188,7 @@ public class SlaveTcpServer {
         cmd = cmd.toUpperCase();
 
         String res = "";
-        switch (cmd){
+        switch (cmd.toUpperCase()){
             case "SET":
                 commandHandler.set(command);
                 String commandRespString = respSerializer.respArray(command);

@@ -83,7 +83,8 @@ public class MasterTcpServer {
     }
     private void handleClient(Client client) throws IOException {
         connectionPool.addClient(client);
-        while(client.socket.isConnected()){
+//        while(client.socket.isConnected()){
+        while(true){
             byte[] buffer = new byte[client.socket.getReceiveBufferSize()];
             int bytesRead = client.inputStream.read(buffer);
 
@@ -94,6 +95,8 @@ public class MasterTcpServer {
                 for(String[] command :commands){
                     handleCommand(command, client);
                 }
+            }else if(bytesRead == -1){
+              break;
             }
         }
         connectionPool.removeClient(client);
@@ -124,7 +127,7 @@ public class MasterTcpServer {
 
     private void transactionController(String[] command, Client client) throws IOException {
         //control only comes here in the transaction context
-        switch (command[0]){
+        switch (command[0].toUpperCase()){
             case "WATCH":
                 String res = "-ERR WATCH inside MULTI is not allowed\r\n";
                 client.send(res);
@@ -178,7 +181,7 @@ public class MasterTcpServer {
     }
 
     private boolean isTransactionalControlCommand(String command) {
-        return switch (command) {
+        return switch (command.toUpperCase()) {
             case "EXEC", "DISCARD", "WATCH" -> true;
             default -> false;
         };
@@ -188,7 +191,7 @@ public class MasterTcpServer {
         //control comes here only when the client is not in a transaction
         String res = "";
         byte[] data = null;
-        switch (command[0]){
+        switch (command[0].toUpperCase()){
             case "PING":
                 res = commandHandler.ping(command);
                 break;
