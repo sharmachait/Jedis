@@ -12,12 +12,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
 public class Store {
-    private static final Logger logger = Logger.getLogger(Store.class.getName());
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
     public ConcurrentHashMap<String, Value> map;
     public ConcurrentHashMap<String, Set<Integer>> watchingClientsListForKeys;
@@ -67,7 +64,6 @@ public class Store {
             watchingClientsListForKeys.put(key, watchers);
             return true;
         } catch(Exception e){
-            logger.log(Level.SEVERE, e.getMessage());
             return false;
         } finally {
           rwLock.writeLock().unlock();
@@ -75,26 +71,20 @@ public class Store {
     }
 
     public boolean removeWatcherForKey(String key, Client watcher) {
-      System.out.println("getting lock");
         rwLock.writeLock().lock();
-        System.out.println("got lock");
         try{
             Set<Integer> watchers = watchingClientsListForKeys.getOrDefault(key, null);
             if (watchers == null){
                 return true;
             }
             watchers.remove(watcher.id);
-            System.out.println(watchingClientsListForKeys);
-            System.out.println("removed watcher");
             if(watchers.isEmpty()){
               watchingClientsListForKeys.remove(key);
             }else{
               watchingClientsListForKeys.put(key, watchers);
             }
-            System.out.println(watchingClientsListForKeys);
             return true;
         } catch(Exception e){
-            logger.log(Level.SEVERE, e.getMessage());
             return false;
         } finally {
           rwLock.writeLock().unlock();
@@ -108,7 +98,6 @@ public class Store {
             map.put(key, value);
             return "+OK\r\n";
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
             return "$-1\r\n";
         }finally{
             rwLock.writeLock().unlock();
@@ -124,7 +113,6 @@ public class Store {
             map.put(key, value);
             return "+OK\r\n";
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
             return "$-1\r\n";
         }finally{
             rwLock.writeLock().unlock();
@@ -143,7 +131,6 @@ public class Store {
             }
             return respSerializer.serializeBulkString(value.val);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
             return "$-1\r\n";
         }finally{
             rwLock.readLock().unlock();
@@ -162,7 +149,6 @@ public class Store {
             }
             return value;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
             return null;
         }finally{
             rwLock.readLock().unlock();
@@ -181,9 +167,7 @@ public class Store {
                 String[] command = client.commandQueue.poll();
                 String response = transactionCacheApplier.apply(command, localCache);
                 responses.add(response);
-            }System.out.println("control came here execute transaction");
-                    client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
-                    System.out.println("control came here execute transaction");
+            }
 
             //control will only come here when the queue is empty, that means no other commands in the transaction left to be applied
             for(Map.Entry<String, Value> entry : localCache.entrySet()){
@@ -195,17 +179,12 @@ public class Store {
                 }else{
                     this.map.put(key, value);
                 }
-            }System.out.println("control came here copy");
-                    client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
-                    System.out.println("control came here copy");
+            }
             if(client.watchSet!=null){
                 for(String key: client.watchSet) {
                     removeWatcherForKey(key, client);
                 }
             }
-                                System.out.println("control came here remove watcher");
-                    client.transactionResponse.stream().forEach((res)-> System.out.println(res.replace("\r", "\\r").replace("\n", "\\n")));
-                    System.out.println("control came here remove watcher");
             client.transactionResponse.addAll(responses);
         }finally {
             rwLock.writeLock().unlock();

@@ -20,12 +20,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
 public class CommandHandler {
     private static final String emptyRdbFile = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
-    private static final Logger logger = Logger.getLogger(CommandHandler.class.getName());
     @Autowired
     public RespSerializer respSerializer;
     @Autowired
@@ -69,7 +67,6 @@ public class CommandHandler {
                 return store.set(key, value);
             }
         }catch (Exception e){
-            logger.log(Level.SEVERE, e.getMessage());
             return "$-1\r\n";
         }
     }
@@ -78,7 +75,6 @@ public class CommandHandler {
             String key = command[1];
             return store.get(key);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
             return "$-1\r\n";
         }
     }

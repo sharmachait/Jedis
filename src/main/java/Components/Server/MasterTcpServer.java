@@ -27,12 +27,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
 public class MasterTcpServer {
-    private static final Logger logger = Logger.getLogger(MasterTcpServer.class.getName());
     @Autowired
     private RespSerializer respSerializer;
     @Autowired
@@ -72,7 +69,7 @@ public class MasterTcpServer {
             }
 
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+          System.out.println(e.getMessage());
         } finally {
             try {
                 executorService.shutdown();
@@ -80,7 +77,7 @@ public class MasterTcpServer {
                     clientSocket.close();
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage());
+              System.out.println(e.getMessage());
             }
         }
     }
@@ -152,12 +149,7 @@ public class MasterTcpServer {
                         connectionPool.bytesSentToSlaves += toCount.length;
                         CompletableFuture.runAsync(()->propagate(commandToPropagate));
                     }
-                    for(String s: client.transactionResponse) {
-                      System.out.println(s.replace("\r", "\\r").replace("\n", "\\n"));
-                    }
                     String response = respSerializer.respArray(client.transactionResponse);
-                    System.out.println(response.replace("\r", "\\r").replace("\n", "\\n"));
-                    System.out.println("RESPONSE");
                     client.send(response);
                 } catch(OptimisticLockException e) {
                   client.send("*-1\r\n");

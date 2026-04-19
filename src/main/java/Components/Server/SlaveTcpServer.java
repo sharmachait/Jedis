@@ -22,12 +22,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Component
 public class SlaveTcpServer {
-    private static final Logger logger = Logger.getLogger(SlaveTcpServer.class.getName());
     @Autowired
     private RespSerializer respSerializer;
     @Autowired
@@ -73,14 +70,14 @@ public class SlaveTcpServer {
             }
 
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+          System.out.println(e.getMessage());
         } finally {
             try {
                 if (clientSocket != null) {
                     clientSocket.close();
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage());
+              System.out.println(e.getMessage());
             }
         }
     }
@@ -96,7 +93,6 @@ public class SlaveTcpServer {
             outputStream.write(data);
             int bytesRead = inputStream.read(inputBuffer,0,inputBuffer.length);
             String response = new String(inputBuffer,0,bytesRead, StandardCharsets.UTF_8);
-            logger.log(Level.FINE, response);
 
             //part 2 of the handshake
             int lenListeningPort = (redisConfig.getPort()+"").length();
@@ -108,14 +104,12 @@ public class SlaveTcpServer {
             outputStream.write(data);
             bytesRead = inputStream.read(inputBuffer,0,inputBuffer.length);
             response = new String(inputBuffer,0,bytesRead, StandardCharsets.UTF_8);
-            logger.log(Level.FINE, response);
 
             replconf = "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n";
             data = replconf.getBytes();
             outputStream.write(data);
             bytesRead = inputStream.read(inputBuffer,0,inputBuffer.length);
             response = new String(inputBuffer,0,bytesRead, StandardCharsets.UTF_8);
-            logger.log(Level.FINE, response);
 
             // part 3 of the handshake
             String psync = "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n";
@@ -184,7 +178,7 @@ public class SlaveTcpServer {
             }
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage());
+          System.out.println(e.getMessage());
         }
     }
 
