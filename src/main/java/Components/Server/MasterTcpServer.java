@@ -166,6 +166,12 @@ public class MasterTcpServer {
                 }
                 break;
             case "DISCARD":
+                if(client.watchSet!=null){
+                    for(String key: client.watchSet) {
+                        store.removeWatcherForKey(key, client);
+                    }
+                }
+
                 client.endTransaction();
                 client.send("+OK\r\n");
                 break;
@@ -197,6 +203,16 @@ public class MasterTcpServer {
                 break;
             case "DISCARD":
                 res = "-ERR DISCARD without MULTI\r\n";
+                break;
+            case "UNWATCH":
+                if(client.watchSet!=null){
+                    for(String key: client.watchSet) {
+                        store.removeWatcherForKey(key, client);
+                    }
+                }
+
+                client.watchSet = null;
+                res = "+OK\r\n";
                 break;
             case "WATCH":
                 res = commandHandler.watch(command, client);
