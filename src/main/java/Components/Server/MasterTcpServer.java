@@ -93,6 +93,8 @@ public class MasterTcpServer {
                 List<String[]> commands = respSerializer.deseralize(buffer);
 
                 for(String[] command :commands){
+                    printCommand(command);
+                    System.out.println(client.isSubscribed);
                     if(client.isSubscribed){
                         handleCommandSubscribed(command, client);
                     } else {
@@ -115,8 +117,6 @@ public class MasterTcpServer {
       System.out.println("=========================");
     }
     private void handleCommandSubscribed(String[] command, Client client) throws IOException {
-      printCommand(command);  
-      System.out.println(isCommandSubscribeModeEligible(command[0].toUpperCase()));
       if(!isCommandSubscribeModeEligible(command[0].toUpperCase())){
             String errMessage = "-ERR Can't execute '"+command[0].toLowerCase()+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context\r\n";
             client.send(errMessage);
