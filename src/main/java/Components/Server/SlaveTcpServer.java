@@ -268,6 +268,7 @@ public class SlaveTcpServer {
         if(!isCommandSubscribeModeEligible(command[0].toUpperCase())){
             String errMessage = "-ERR Can't execute '"+command[0].toLowerCase()+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context\r\n";
             client.send(errMessage);
+            return;
         }
         String res = "";
         switch (command[0].toUpperCase()) {
