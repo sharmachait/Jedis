@@ -291,6 +291,9 @@ public class MasterTcpServer {
             case "SUBSCRIBE":
                 res = commandHandler.subscribe(command, client);
                 break;
+            case "PUBLISH":
+                res = commandHandler.publish(command);
+                break;
         }
         return new ResponseDto(res, data);
     }

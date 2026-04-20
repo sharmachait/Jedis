@@ -162,6 +162,13 @@ public class CommandHandler {
         }
 
     }
+    public String publish(String[] command){
+        printCommand(command);
+        String channelId = command[1];
+        String message = command[2];
+        int res = clientChannelPool.publish(channelId, message);
+        return respSerializer.respInteger(res);
+    }
     public String subscribe(String[] command, Client client) {
         String channelId = command[1];
         int numberOfChannels = clientChannelPool.subscribe(client, channelId);
