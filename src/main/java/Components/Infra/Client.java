@@ -18,7 +18,7 @@ public class Client {
     public InputStream inputStream;
     public OutputStream outputStream;
     public int id;
-
+    public boolean isSubscribed;
     private boolean transactionalContext;
     public Queue<String[]> commandQueue;
     public List<String> transactionResponse; // the strings will be in resp format we just need to make a resp array out of it
@@ -58,6 +58,7 @@ public class Client {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.id = id;
+        this.isSubscribed = false;
     }
 
     public void send(String res, byte[] data) throws IOException {

@@ -240,8 +240,12 @@ public class SlaveTcpServer {
                 // bytes parsing into strings
                 List<String[]> commands = respSerializer.deseralize(buffer);
 
-                for(String[] command :commands){
-                    handleCommand(command, client);
+                for(String[] command :commands){                    
+                    if(client.isSubscribed){
+                        handleCommandSubscribed(command, client);
+                    } else {
+                        handleCommand(command, client);
+                    }
                 }
             } else if(bytesRead == -1) {
               // Client disconnected;
@@ -260,6 +264,18 @@ public class SlaveTcpServer {
     }
 
 
+    private void handleCommandSubscribed(String[] command, Client client) throws IOException {
+        if(!isCommandSubscribeModeEligible(command[0].toUpperCase())){
+            String errMessage = "-ERR Can't execute '"+command[0].toLowerCase()+"': only (P|S)SUBSCRIBE / (P|S)UNSUBSCRIBE / PING / QUIT / RESET are allowed in this context\r\n";
+            client.send(errMessage);
+        }
+    }
+    private boolean isCommandSubscribeModeEligible(String command){
+        return switch (command) {
+          case "SUBSCRIBE", "UNSUBSCRIBE", "PSUBSCRIBE", "PUNSUBSCRIBE", "PING", "QUIT" -> true;
+          default -> false;
+        };
+    }
     private void handleCommand(String[] command, Client client) throws IOException {
         String res = "";
         byte[] data = null;

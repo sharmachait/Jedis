@@ -169,6 +169,7 @@ public class CommandHandler {
         String response = "*3\r\n$9\r\nsubscribe\r\n"
                            + respSerializer.serializeBulkString(channelId) +
                            numberOfChannelsResp;
+        client.isSubscribed = true;
         return response;
     }
     public String wait(String[] command, Instant start) {

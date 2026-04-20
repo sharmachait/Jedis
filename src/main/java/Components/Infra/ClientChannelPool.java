@@ -37,4 +37,8 @@ public class ClientChannelPool {
 
         return channelIdsByClientIds.get(client.id).size();
     }
+    public boolean isClientSubscribed(Client client){
+        Set<String> channelIds = channelIdsByClientIds.getOrDefault(client.id, new HashSet<>());
+        return channelIds.size() > 0;
+    }
 }
