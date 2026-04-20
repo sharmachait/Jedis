@@ -127,6 +127,9 @@ public class MasterTcpServer {
           case "SUBSCRIBE":
             res = commandHandler.subscribe(command, client);
             break;
+          case "PING":
+            res = respSerializer.respArray(List.of("PONG", ""));
+            break;
           default:
             res = command[0];
             break;
