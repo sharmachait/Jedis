@@ -255,6 +255,9 @@ public class MasterTcpServer {
                 res = resDto.response;
                 data = resDto.data;
                 break;
+            case "SUBSCRIBE":
+                res = commandHandler.subscribe(command, client);
+                break;
         }
         return new ResponseDto(res, data);
     }

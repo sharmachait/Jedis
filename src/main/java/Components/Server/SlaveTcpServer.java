@@ -293,7 +293,11 @@ public class SlaveTcpServer {
                 Instant start = Instant.now();
                 res = commandHandler.wait(command, start);
                 connectionPool.slavesThatAreCaughtUp = 0;
+                break;            
+            case "SUBSCRIBE":
+                res = commandHandler.subscribe(command, client);
                 break;
+
         }
         client.send(res, data);
     }

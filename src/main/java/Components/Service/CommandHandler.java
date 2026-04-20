@@ -1,6 +1,7 @@
 package Components.Service;
 
 import Components.Infra.Client;
+import Components.Infra.ClientChannelPool;
 import Components.Infra.ConnectionPool;
 import Components.Infra.Slave;
 import Components.Repository.OptimisticLockException;
@@ -32,6 +33,8 @@ public class CommandHandler {
     public RedisConfig redisConfig;
     @Autowired
     public ConnectionPool connectionPool;
+    @Autowired
+    public ClientChannelPool clientChannelPool;
     public String ping(String[] command){
         return "+PONG\r\n";
     }
@@ -158,6 +161,16 @@ public class CommandHandler {
             return new ResponseDto("Options not supported yet.");
         }
 
+    }
+    public String subscribe(String[] command, Client client) {
+        String[] response = new String[3];
+        response[0] = "subscribe";
+        String channelId = command[1];
+        response[1] = channelId;
+        int numberOfChannels = clientChannelPool.subscribe(client, channelId);
+        String numberOfChannelsResp = respSerializer.respInteger(numberOfChannels);
+        response[2] = numberOfChannelsResp;
+        return respSerializer.respArray(response);
     }
     public String wait(String[] command, Instant start) {
         String[] getackarr = new String[] { "REPLCONF", "GETACK", "*" };
