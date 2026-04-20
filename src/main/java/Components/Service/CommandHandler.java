@@ -163,14 +163,13 @@ public class CommandHandler {
 
     }
     public String subscribe(String[] command, Client client) {
-        String[] response = new String[3];
-        response[0] = "subscribe";
         String channelId = command[1];
-        response[1] = channelId;
         int numberOfChannels = clientChannelPool.subscribe(client, channelId);
         String numberOfChannelsResp = respSerializer.respInteger(numberOfChannels);
-        response[2] = numberOfChannelsResp;
-        return respSerializer.respArray(response);
+        String response = "*3\r\n$9\r\nsubscribe\r\n"
+                           + respSerializer.serializeBulkString(channelId) +
+                           numberOfChannelsResp;
+        return response;
     }
     public String wait(String[] command, Instant start) {
         String[] getackarr = new String[] { "REPLCONF", "GETACK", "*" };
