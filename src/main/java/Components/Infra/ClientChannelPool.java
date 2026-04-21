@@ -7,10 +7,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import Components.Service.RespSerializer;
 
 @Component
 public class ClientChannelPool {
+    @Autowired
+    private RespSerializer respSerializer;
     ConcurrentHashMap<String, Channel> channelByChannelId;
     ConcurrentHashMap<Integer, Set<String>> channelIdsByClientIds;
 
@@ -62,9 +67,15 @@ public class ClientChannelPool {
              rwLock.readLock().unlock();
          }
          int res = 0;
+         String[] messageToSend = new String[3];
+         messageToSend[0] = "message";
+         messageToSend[1] = channelId;
+         messageToSend[2] = message;
+         String messageToSendResp = respSerializer.respArray(messageToSend);
          try{
+             System.out.println("SENDING: "+ messageToSendResp.replace("\r", "\\r").replace("\n", "\\n"));
              for(Client client: snashot){
-                 client.send(message);
+                 client.send(messageToSendResp);
                  res ++;
              }
          } catch (Exception e){
