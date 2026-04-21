@@ -127,6 +127,9 @@ public class MasterTcpServer {
           case "SUBSCRIBE":
             res = commandHandler.subscribe(command, client);
             break;
+          case "UNSUBSCRIBE":
+            res = commandHandler.unsubscribe(command, client);
+            break;
           case "PING":
             res = "*2\r\n$4\r\npong\r\n$0\r\n\r\n";
             break;
@@ -290,6 +293,9 @@ public class MasterTcpServer {
                 break;
             case "SUBSCRIBE":
                 res = commandHandler.subscribe(command, client);
+                break;
+            case "UNSUBSCRIBE":
+                res = commandHandler.unsubscribe(command, client);
                 break;
             case "PUBLISH":
                 res = commandHandler.publish(command);

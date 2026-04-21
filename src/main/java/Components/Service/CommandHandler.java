@@ -179,6 +179,16 @@ public class CommandHandler {
         client.isSubscribed = true;
         return response;
     }
+    public String unsubscribe(String[] command, Client client) {
+        String channelId = command[1];
+        int numberOfChannels = clientChannelPool.unsubscribe(client, channelId);
+        String numberOfChannelsResp = respSerializer.respInteger(numberOfChannels);
+        String response = "*3\r\n$11\r\nunsubscribe\r\n"
+                           + respSerializer.serializeBulkString(channelId) +
+                           numberOfChannelsResp;
+        client.isSubscribed = false;
+        return response;
+    }
     public String wait(String[] command, Instant start) {
         String[] getackarr = new String[] { "REPLCONF", "GETACK", "*" };
         String getack = respSerializer.respArray(getackarr);

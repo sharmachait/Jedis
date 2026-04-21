@@ -3,8 +3,6 @@ package Components.Infra;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ public class ClientChannelPool {
     ConcurrentHashMap<String, Channel> channelByChannelId;
     ConcurrentHashMap<Integer, Set<String>> channelIdsByClientIds;
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
     public ClientChannelPool(){
         this.channelByChannelId = new ConcurrentHashMap<>();
@@ -47,6 +44,26 @@ public class ClientChannelPool {
               rwLock.writeLock().unlock();
         }
     }
+    public int unsubscribe(Client client, String channelId){
+        rwLock.writeLock().lock();
+        try{
+            if(!channelByChannelId.containsKey(channelId)){
+                return -1;
+            }
+            Channel channel = channelByChannelId.get(channelId);
+            channelIdsByClientIds.get(client.id).remove(channelId);
+
+            channel.clients.remove(client);
+
+            if(channel.clients.isEmpty()){
+                channelByChannelId.remove(channelId);
+            }
+            return channelIdsByClientIds.getOrDefault(client.id, new HashSet<>()).size();
+        } finally {
+              rwLock.writeLock().unlock();
+        }
+    }
+
     public boolean isClientSubscribed(Client client){
         rwLock.readLock().lock();
         try{
