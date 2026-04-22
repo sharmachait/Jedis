@@ -5,7 +5,6 @@ import Components.Service.RespSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.RenderingHints.Key;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -90,7 +89,22 @@ public class Store {
           rwLock.writeLock().unlock();
         }
     }
-
+    public int rpush(String key, String val){
+       rwLock.writeLock().lock();
+       try{
+           Value value = map.get(key);
+           if(value == null) {
+               value = new Value(ValueType.LIST, LocalDateTime.now(), LocalDateTime.MAX);
+               map.put(key, value);
+           }  else if(value.type != ValueType.LIST){
+               return -1;
+           }
+           value.list.add(val);
+           return value.list.size();
+       }finally{
+           rwLock.writeLock().unlock();
+       }
+    }
     public String set(String key, String val){
         rwLock.writeLock().lock();
         try{

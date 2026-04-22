@@ -257,6 +257,14 @@ public class MasterTcpServer {
                 break;
             case "INCR":
                 res = commandHandler.incr(command);
+                String[] commandToPropagate = new String[3];
+                commandToPropagate[0] = "SET";
+                commandToPropagate[1] = command[1];
+                commandToPropagate[2] = res.substring(1, res.indexOf("\r\n"));
+                String commandString = respSerializer.respArray(commandToPropagate);
+                byte[] toCountIncr = commandString.getBytes();
+                connectionPool.bytesSentToSlaves += toCountIncr.length;
+                CompletableFuture.runAsync(()->propagate(commandToPropagate));
                 break;
             case "ECHO":
                 res = commandHandler.echo(command);
@@ -266,6 +274,13 @@ public class MasterTcpServer {
                 String commandRespString = respSerializer.respArray(command);
                 byte[] toCount = commandRespString.getBytes();
                 connectionPool.bytesSentToSlaves += toCount.length;
+                CompletableFuture.runAsync(()->propagate(command));
+                break;
+            case "RPUSH":
+                res = commandHandler.rpush(command);
+                String commandRespStringRpush = respSerializer.respArray(command);
+                byte[] toCountRpush = commandRespStringRpush.getBytes();
+                connectionPool.bytesSentToSlaves += toCountRpush.length;
                 CompletableFuture.runAsync(()->propagate(command));
                 break;
             case "GET":

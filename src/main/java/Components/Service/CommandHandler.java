@@ -48,6 +48,13 @@ public class CommandHandler {
     public String echo(String[] command){
         return respSerializer.serializeBulkString(command[1]);
     }
+    public String rpush(String[] command){
+        String key = command[1];
+        String val = command[2];
+        int length = store.rpush(key, val);
+
+        return respSerializer.respInteger(length);
+    }
     public String set(String[] command){
         // TODO global exception handling
         try{
