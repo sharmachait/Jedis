@@ -105,12 +105,12 @@ public class Store {
            rwLock.writeLock().unlock();
        }
     }
-    public List<String> lrange(String key, int start, int stop) {
+    public String[] lrange(String key, int start, int stop) {
         rwLock.readLock().lock();
         try{
             Value value = map.get(key);
             if(value == null) {
-                return List.of();
+                return new String[0];
             } else if(value.type!=ValueType.LIST){
                 throw new RuntimeException("-ERR WRONGTYPE Operation against a key holding the wrong kind of value\r\n");
             }
@@ -119,14 +119,14 @@ public class Store {
             int startPositive = start < 0? start +  length :start;
             int stopPositive = stop < 0? stop + length: stop;
 
-            if(startPositive > stopPositive - 1) return List.of();
+            if(startPositive > stopPositive - 1) return new String[0];
             int stopExclusive = stopPositive+1;
 
 
-            if(startPositive >= length) return List.of();
+            if(startPositive >= length) return new String[0];
             stopExclusive = Math.min(stopExclusive, length);
             List<String> snapshot = new ArrayList<>(value.list);
-            return new ArrayList<>(snapshot.subList(startPositive, stopExclusive));
+            return snapshot.subList(startPositive, stopExclusive).toArray(new String[0]);
         }finally{
             rwLock.readLock().unlock();
         }

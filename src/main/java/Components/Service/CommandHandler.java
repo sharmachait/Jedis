@@ -63,8 +63,8 @@ public class CommandHandler {
         int start = Integer.parseInt(command[2]);
         int stop = Integer.parseInt(command[3]);
         String key = command[1];
-        List<String> list = store.lrange(key, start, stop);
-        if(list.isEmpty()){
+        String[] list = store.lrange(key, start, stop);
+        if(list.length == 0){
             return "*0\r\n";
         }
         return respSerializer.respArray(list);
