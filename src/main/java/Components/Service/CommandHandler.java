@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -57,6 +58,16 @@ public class CommandHandler {
         }
 
         return respSerializer.respInteger(length);
+    }
+    public String lrange(String[] command){
+        int start = Integer.parseInt(command[2]);
+        int stop = Integer.parseInt(command[3]);
+        String key = command[1];
+        List<String> list = store.lrange(key, start, stop);
+        if(list.isEmpty()){
+            return "*0\r\n";
+        }
+        return respSerializer.respArray(list);
     }
     public String set(String[] command){
         // TODO global exception handling
