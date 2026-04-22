@@ -50,8 +50,11 @@ public class CommandHandler {
     }
     public String rpush(String[] command){
         String key = command[1];
-        String val = command[2];
-        int length = store.rpush(key, val);
+        int length = 0;
+        for(int i=2; i<command.length;i++){
+            String val = command[i];
+            length = store.rpush(key, val);
+        }
 
         return respSerializer.respInteger(length);
     }
