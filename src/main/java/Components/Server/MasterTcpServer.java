@@ -281,6 +281,13 @@ public class MasterTcpServer {
                 connectionPool.bytesSentToSlaves += toCountRpush.length;
                 CompletableFuture.runAsync(()->propagate(command));
                 break;
+            case "LPUSH":
+                res = commandHandler.lpush(command);
+                String commandRespStringLpush = respSerializer.respArray(command);
+                byte[] toCountLpush = commandRespStringLpush.getBytes();
+                connectionPool.bytesSentToSlaves += toCountLpush.length;
+                CompletableFuture.runAsync(()->propagate(command));
+                break;
             case "LRANGE":
                 res = commandHandler.lrange(command);
                 break;

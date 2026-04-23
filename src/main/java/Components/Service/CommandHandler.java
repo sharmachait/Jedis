@@ -59,6 +59,16 @@ public class CommandHandler {
 
         return respSerializer.respInteger(length);
     }
+    public String lpush(String[] command){
+        String key = command[1];
+        int length = 0;
+        for(int i=2; i<command.length;i++){
+            String val = command[i];
+            length = store.lpush(key, val);
+        }
+
+        return respSerializer.respInteger(length);
+    }
     public String lrange(String[] command){
         int start = Integer.parseInt(command[2]);
         int stop = Integer.parseInt(command[3]);
