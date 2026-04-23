@@ -118,7 +118,8 @@ public class Store {
 
             int startPositive = start < 0? start +  length :start;
             int stopPositive = stop < 0? stop + length: stop;
-
+            System.out.println("------------- start --------------" + startPositive);
+            System.out.println("------------- stop  --------------" + stopPositive);
             if(startPositive > stopPositive - 1) return new String[0];
             int stopExclusive = stopPositive+1;
 
