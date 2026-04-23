@@ -61,7 +61,14 @@ public class CommandHandler {
     }
     public String lpop(String[] command){
         String key = command[1];
-        return respSerializer.serializeBulkString(store.lpop(key));
+        if(command.length == 2)
+            return respSerializer.serializeBulkString(store.lpop(key));
+        int poptimes = Integer.parseInt(command[2]);
+        String[] pops = new String[poptimes];
+        for(int i=0; i<poptimes; i++){
+            pops[i] = store.lpop(key);
+        }
+        return respSerializer.respArray(pops);
     }
     public String llen(String[] command){
         String key = command[1];
