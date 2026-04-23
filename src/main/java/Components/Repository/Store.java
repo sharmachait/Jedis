@@ -115,18 +115,23 @@ public class Store {
                 throw new RuntimeException("-ERR WRONGTYPE Operation against a key holding the wrong kind of value\r\n");
             }
             int length = value.list.size();
+            System.out.println("------------- length ------------" + length);
+            System.out.println("------------- start -------------" + start);
+            System.out.println("------------- stop  -------------" + stop);
 
             int startPositive = start < 0? start +  length :start;
             int stopPositive = stop < 0? stop + length: stop;
-            System.out.println("------------- start --------------" + startPositive);
-            System.out.println("------------- stop  --------------" + stopPositive);
+            System.out.println("------------- start+ --------------" + startPositive);
+            System.out.println("------------- stop+  --------------" + stopPositive);
             System.out.println(startPositive > (stopPositive));
             if(startPositive > stopPositive) return new String[0];
             int stopExclusive = stopPositive+1;
+            System.out.println("------------ stop exclusive -------------" + stopExclusive);
 
             System.out.println(startPositive >= length);
             if(startPositive >= length) return new String[0];
             stopExclusive = Math.min(stopExclusive, length);
+            System.out.println("--------------------- stop exclusive min length -----------------" + stopExclusive);
             List<String> snapshot = new ArrayList<>(value.list);
             System.out.println(snapshot.subList(startPositive, stopExclusive));
             return snapshot.subList(startPositive, stopExclusive).toArray(new String[0]);
