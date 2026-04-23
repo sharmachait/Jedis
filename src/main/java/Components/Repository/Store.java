@@ -89,6 +89,16 @@ public class Store {
           rwLock.writeLock().unlock();
         }
     }
+    public String lpop(String key){
+        rwLock.writeLock().lock();
+        try{
+            Value value = map.get(key);
+            if(value == null) return "";
+            return value.list.removeFirst();
+        }finally{
+            rwLock.writeLock().unlock();
+        }
+    }
     public int llen(String key){
         rwLock.readLock().lock();
         try{

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 @Component
 public class RespSerializer {
     public String serializeBulkString(String s){
+        if(s.equals("")) return "$-1\r\n";
         int length = s.length();
         String respHeader = "$"+length;
         String respBody = s;
