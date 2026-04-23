@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 
 @Component
 public class Store {
-    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock(true);
     public ConcurrentHashMap<String, Value> map;
     public ConcurrentHashMap<String, Set<Integer>> watchingClientsListForKeys;
     public Set<Integer> failTransactionFor;
@@ -66,18 +66,13 @@ public class Store {
             rwLock.writeLock().unlock();
         }
     }
-    public String blpop_timeout(String key, String timeoutstr){
-        double timeout = Double.parseDouble(timeoutstr);
-        long timeoutMs = (long)(timeout * 1000);
+    public String blpop_timeout(String key, long timeoutMs) throws InterruptedException {
         rwLock.writeLock().lock();
         try{
             Value value = map.get(key);
             if(value == null) return "";
             return value.list.pollFirst(timeoutMs, TimeUnit.MILLISECONDS);
-        } catch(InterruptedException e){
-            e.printStackTrace();
-            return "";
-        }finally{
+        } finally{
             rwLock.writeLock().unlock();
         }
     }

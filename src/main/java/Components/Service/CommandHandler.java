@@ -72,10 +72,24 @@ public class CommandHandler {
     }
     public String blpop(String[] command){
         String key = command[1];
-        if(command.length == 2)
-            return respSerializer.serializeBulkString(store.blpop(key));
-        String timeout = command[2];
-        return respSerializer.serializeBulkString(store.blpop_timeout(key, timeout));
+        double timeout = Double.parseDouble(command[2]);
+        long timeoutMs = (long)(timeout * 1000);
+        if(command.length == 2 || timeout == 0){
+            String e = store.blpop(key);
+            String res[] = new String[2];
+            res[0] = key;
+            res[1] = e;
+            return respSerializer.respArray(res);
+        }
+        try{
+            String e = store.blpop_timeout(key, timeoutMs);
+            String res[] = new String[2];
+            res[0] = key;
+            res[1] = e;
+            return respSerializer.respArray(res);
+        } catch (InterruptedException ex) {
+            return "*-1\r\n";
+        }
     }
     public String llen(String[] command){
         String key = command[1];
