@@ -75,6 +75,7 @@ public class CommandHandler {
         double timeout = Double.parseDouble(command[2]);
         long timeoutMs = (long)(timeout * 1000);
         if(command.length == 2 || timeout == 0){
+            System.out.println("------------- indefinite block --------------");
             String e = store.blpop(key);
             String res[] = new String[2];
             res[0] = key;
@@ -82,6 +83,7 @@ public class CommandHandler {
             return respSerializer.respArray(res);
         }
         try{
+            System.out.println("--------------- blocking for ------------" + timeoutMs);
             String e = store.blpop_timeout(key, timeoutMs);
             String res[] = new String[2];
             res[0] = key;
