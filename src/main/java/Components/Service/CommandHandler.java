@@ -184,7 +184,6 @@ public class CommandHandler {
 
     }
     public String publish(String[] command){
-        printCommand(command);
         String channelId = command[1];
         String message = command[2];
         int res = clientChannelPool.publish(channelId, message);
