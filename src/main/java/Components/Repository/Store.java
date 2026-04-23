@@ -131,7 +131,7 @@ public class Store {
             System.out.println(startPositive >= length);
             if(startPositive >= length) return new String[0];
             stopExclusive = Math.min(stopExclusive, length);
-            stopPositive = Math.max(stopPositive, 0);
+            startPositive = Math.max(startPositive, 0);
             System.out.println("--------------------- stop exclusive min length ----------------- " + stopExclusive);
             List<String> snapshot = new ArrayList<>(value.list);
             System.out.println(snapshot.subList(startPositive, stopExclusive));
