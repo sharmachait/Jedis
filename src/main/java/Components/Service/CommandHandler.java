@@ -70,6 +70,13 @@ public class CommandHandler {
         }
         return respSerializer.respArray(pops);
     }
+    public String blpop(String[] command){
+        String key = command[1];
+        if(command.length == 2)
+            return respSerializer.serializeBulkString(store.blpop(key));
+        String timeout = command[2];
+        return respSerializer.serializeBulkString(store.blpop_timeout(key, timeout));
+    }
     public String llen(String[] command){
         String key = command[1];
         return respSerializer.respInteger(store.llen(key));

@@ -277,6 +277,9 @@ public class MasterTcpServer {
             case "LPOP":
                 res = commandHandler.lpop(command);
                 break;
+            case "BLPOP":
+                res = commandHandler.blpop(command);
+                break;
             case "RPUSH":
                 res = commandHandler.rpush(command);
                 String commandRespStringRpush = respSerializer.respArray(command);
