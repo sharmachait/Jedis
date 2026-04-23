@@ -120,13 +120,15 @@ public class Store {
             int stopPositive = stop < 0? stop + length: stop;
             System.out.println("------------- start --------------" + startPositive);
             System.out.println("------------- stop  --------------" + stopPositive);
-            if(startPositive > stopPositive - 1) return new String[0];
+            System.out.println(startPositive > (stopPositive));
+            if(startPositive > stopPositive) return new String[0];
             int stopExclusive = stopPositive+1;
 
-
+            System.out.println(startPositive >= length);
             if(startPositive >= length) return new String[0];
             stopExclusive = Math.min(stopExclusive, length);
             List<String> snapshot = new ArrayList<>(value.list);
+            System.out.println(snapshot.subList(startPositive, stopExclusive));
             return snapshot.subList(startPositive, stopExclusive).toArray(new String[0]);
         }finally{
             rwLock.readLock().unlock();
