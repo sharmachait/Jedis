@@ -48,7 +48,6 @@ public class SlaveTcpServer {
             //slaveConnectionFuture.thenRun(()->System.out.println("Replication completed"));
             executorService.submit(()->{
              initiateSlavery();
-             System.out.println("Replication completed");
             });
             int id = 0;
             while (true) {

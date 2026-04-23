@@ -93,8 +93,6 @@ public class MasterTcpServer {
                 List<String[]> commands = respSerializer.deseralize(buffer);
 
                 for(String[] command :commands){
-                    printCommand(command);
-                    System.out.println(client.isSubscribed);
                     if(client.isSubscribed){
                         handleCommandSubscribed(command, client);
                     } else {

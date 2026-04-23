@@ -124,7 +124,6 @@ public class Store {
             stopExclusive = Math.min(stopExclusive, length);
             startPositive = Math.max(startPositive, 0);
             List<String> snapshot = new ArrayList<>(value.list);
-            System.out.println(snapshot.subList(startPositive, stopExclusive));
             return snapshot.subList(startPositive, stopExclusive).toArray(new String[0]);
         }finally{
             rwLock.readLock().unlock();

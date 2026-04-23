@@ -90,7 +90,6 @@ public class ClientChannelPool {
          messageToSend[2] = message;
          String messageToSendResp = respSerializer.respArray(messageToSend);
          try{
-             System.out.println("SENDING: "+ messageToSendResp.replace("\r", "\\r").replace("\n", "\\n"));
              for(Client client: snashot){
                  client.send(messageToSendResp);
                  res ++;
