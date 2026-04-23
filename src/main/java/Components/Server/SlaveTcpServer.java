@@ -323,6 +323,9 @@ public class SlaveTcpServer {
             case "GET":
                 res = commandHandler.get(command);
                 break;
+            case "LLEN": 
+                res = commandHandler.llen(command);
+                break;
             case "LRANGE":
                 res = commandHandler.lrange(command);
                 break;

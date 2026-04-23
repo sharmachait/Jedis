@@ -281,6 +281,9 @@ public class MasterTcpServer {
                 connectionPool.bytesSentToSlaves += toCountRpush.length;
                 CompletableFuture.runAsync(()->propagate(command));
                 break;
+            case "LLEN": 
+                res = commandHandler.llen(command);
+                break;
             case "LPUSH":
                 res = commandHandler.lpush(command);
                 String commandRespStringLpush = respSerializer.respArray(command);
