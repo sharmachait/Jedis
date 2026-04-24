@@ -85,6 +85,9 @@ public class CommandHandler {
         try{
             System.out.println("--------------- blocking for ------------" + timeoutMs);
             String e = store.blpop_timeout(key, timeoutMs);
+            if (e == null) {
+                return "*-1\r\n"; // timeout expired, nothing popped
+            }
             String res[] = new String[2];
             res[0] = key;
             res[1] = e;
