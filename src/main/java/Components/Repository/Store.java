@@ -70,7 +70,7 @@ public class Store {
         rwLock.writeLock().lock();
         try{
             Value value = map.get(key);
-            if(value == null) return "";
+            if(value == null) return null;
             return value.list.pollFirst(timeoutMs, TimeUnit.MILLISECONDS);
         } finally{
             rwLock.writeLock().unlock();
