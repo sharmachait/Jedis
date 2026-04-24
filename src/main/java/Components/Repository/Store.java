@@ -4,11 +4,13 @@ import Components.Infra.Client;
 import Components.Service.RespSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yaml.snakeyaml.tokens.ValueToken;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
@@ -53,31 +55,35 @@ public class Store {
         }
     }
 
-    public String blpop(String key){
+    public String blpop(String key) throws InterruptedException{
         rwLock.writeLock().lock();
+        LinkedBlockingDeque<String> deque;
         try{
             Value value = map.get(key);
-            if(value == null) return "";
-            return value.list.takeFirst();
-        } catch(InterruptedException e){
-            e.printStackTrace();
-            return "";
-        }finally{
+            if(value == null) {
+                value = new Value(ValueType.LIST, LocalDateTime.now(), LocalDateTime.MAX);
+                map.put(key, value);
+            }
+            deque = value.list;
+        } finally{
             rwLock.writeLock().unlock();
         }
+        return deque.takeFirst();
     }
     public String blpop_timeout(String key, long timeoutMs) throws InterruptedException {
         rwLock.writeLock().lock();
+        LinkedBlockingDeque<String> deque;
         try{
             Value value = map.get(key);
             if(value == null) {
                 Thread.sleep(timeoutMs);
                 return null;
             }
-            return value.list.pollFirst(timeoutMs, TimeUnit.MILLISECONDS);
+            deque = value.list;
         } finally{
             rwLock.writeLock().unlock();
         }
+        return deque.pollFirst(timeoutMs, TimeUnit.MILLISECONDS);
     }
     public boolean addWatcherForKey(String key, Client watcher){
         rwLock.writeLock().lock();
