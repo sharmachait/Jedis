@@ -85,14 +85,19 @@ public class CommandHandler {
         try{
             System.out.println("--------------- blocking for ------------" + timeoutMs);
             String e = store.blpop_timeout(key, timeoutMs);
+            System.out.println("--------------- blpop_timeout returned: [" + e + "]");
             if (e == null) {
+                System.out.println("--------------- returning null array");
                 return "*-1\r\n"; // timeout expired, nothing popped
             }
             String res[] = new String[2];
             res[0] = key;
             res[1] = e;
-            return respSerializer.respArray(res);
+            String serialized = respSerializer.respArray(res);
+            System.out.println("--------------- returning: [" + serialized + "]"); // ADD THIS
+            return serialized;
         } catch (InterruptedException ex) {
+            System.out.println("--------------- interrupted, returning null array");
             return "*-1\r\n";
         }
     }
