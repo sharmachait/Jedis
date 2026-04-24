@@ -76,8 +76,8 @@ public class Store {
         try{
             Value value = map.get(key);
             if(value == null) {
-                Thread.sleep(timeoutMs);
-                return null;
+                value = new Value(ValueType.LIST, LocalDateTime.now(), LocalDateTime.MAX);
+                map.put(key, value);
             }
             deque = value.list;
         } finally{
