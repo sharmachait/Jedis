@@ -332,6 +332,9 @@ public class SlaveTcpServer {
             case "INFO":
                 res = commandHandler.info(command);
                 break;
+            case "TYPE":
+                res = commandHandler.type(command);
+                break;
             case "PSYNC":
                 ResponseDto resDto = commandHandler.psync(command);
                 res = resDto.response;

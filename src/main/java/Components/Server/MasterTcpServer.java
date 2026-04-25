@@ -249,6 +249,9 @@ public class MasterTcpServer {
             case "WATCH":
                 res = commandHandler.watch(command, client);
                 break;
+            case "TYPE":
+                res = commandHandler.type(command);
+                break;
             case "MULTI":
                 client.beginTransaction();
                 res = "+OK\r\n";
