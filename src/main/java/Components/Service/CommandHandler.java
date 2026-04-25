@@ -59,6 +59,14 @@ public class CommandHandler {
 
         return respSerializer.respInteger(length);
     }
+    public String type(String[] command){
+        String key = command[1];
+        if(!store.map.containsKey(key)){
+            return "none";
+        }
+
+        return store.getValue(key).type.toString().toLowerCase();
+    }
     public String lpop(String[] command){
         String key = command[1];
         if(command.length == 2)
