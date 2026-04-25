@@ -66,7 +66,7 @@ public class CommandHandler {
         }
 
         String type = store.getValue(key).type.toString().toLowerCase();
-        return respSerializer.serializeBulkString(type);
+        return "+"+type+"\r\n";
     }
     public String lpop(String[] command){
         String key = command[1];
