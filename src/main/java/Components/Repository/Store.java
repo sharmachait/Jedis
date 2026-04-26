@@ -297,34 +297,32 @@ public class Store {
             rwLock.writeLock().unlock();
         }
     }
-    public boolean[] verifyEntryIdForStream(String key, String entryId) {
+    public boolean verifyEntryIdForStream(String key, String entryId) {
         Value val = map.getOrDefault(key, null);
-        if(val == null) return new boolean[]{true, false};
-        if(val.type != ValueType.STREAM) return new boolean[]{false, false};
+        if(val == null) return true;
+        if(val.type != ValueType.STREAM) return false;
         Map.Entry<String, Map<String, String>> last = val.stream.lastEntry();
         String lastId;
-        boolean is_0_0=false;
         if (last != null) {
             lastId = last.getKey();
         } else {
             lastId = "0-0";
-            is_0_0 = true;
         }
         String[] lastParts = lastId.split("-");
         String[] newParts = entryId.split("-");
         long lastMs = Long.parseLong(lastParts[0]);
         long newMs = Long.parseLong(newParts[0]);
         if(Long.compare(lastMs, newMs) > 0){
-            return new boolean[]{false, is_0_0};
+            return false;
         }
         if(Long.compare(lastMs, newMs) == 0) {
             long lastseq = Long.parseLong(lastParts[1]);
             long newseq = Long.parseLong(newParts[1]);
             if(Long.compare(lastseq, newseq)>=0){
-                return new boolean[]{false, is_0_0};
+                return false;
             }
         }
-        return new boolean[]{true, is_0_0};
+        return true;
     }
     public Value xadd(String key, String entryId, Map<String, String> entries){
         rwLock.writeLock().lock();    
