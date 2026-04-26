@@ -80,11 +80,8 @@ public class CommandHandler {
         if (entryId.equals("0-0")) {
             return "-ERR The ID specified in XADD must be greater than 0-0\r\n";
         }
-        boolean[] flags = store.verifyEntryIdForStream(key, entryId);
-        if(!flags[0]) {
-            if(flags[1]){
-                return "-ERR The ID specified in XADD must be greater than 0-0\r\n";
-            }
+        boolean flag = store.verifyEntryIdForStream(key, entryId);
+        if(!flag) {
             return "-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n";
         }
         store.xadd(key, entryId, entries);
