@@ -209,6 +209,13 @@ public class SlaveTcpServer {
                 connectionPool.bytesSentToSlaves += toCountRpush.length;
                 CompletableFuture.runAsync(()->propagate(command));
                 break;
+            case "XADD":
+                res = commandHandler.xadd(command);
+                String commandRespStringXadd = respSerializer.respArray(command);
+                byte[] toCountXadd = commandRespStringXadd.getBytes();
+                connectionPool.bytesSentToSlaves += toCountXadd.length;
+                CompletableFuture.runAsync(()->propagate(command));
+                break;
             case "REPLCONF":
                 res = commandHandler.replconf(command, master);
                 break;
