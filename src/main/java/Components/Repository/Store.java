@@ -302,6 +302,7 @@ public class Store {
         Value val = Value.newStream();
         try{
             val.stream.put(entryId, entries);
+            map.put(key, val);
         }finally{
             rwLock.writeLock().unlock();
         }
