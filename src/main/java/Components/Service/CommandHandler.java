@@ -77,6 +77,9 @@ public class CommandHandler {
             entries.put(command[i], command[i+1]);
         }
         command[2] = entryId;
+        if(!store.verifyEntryIdForStream(key, entryId)) {
+            return "-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n";
+        }
         store.xadd(key, entryId, entries);
         return respSerializer.serializeBulkString(entryId);
     }

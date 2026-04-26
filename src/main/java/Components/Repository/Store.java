@@ -297,8 +297,35 @@ public class Store {
             rwLock.writeLock().unlock();
         }
     }
+    public boolean verifyEntryIdForStream(String key, String entryId) {
+        Value val = map.getOrDefault(key, null);
+        if(val == null) return true;
+        if(val.type != ValueType.STREAM) return false;
+        Map.Entry<String, Map<String, String>> last = val.stream.lastEntry();
+        String lastId;
+        if (last != null) {
+            lastId = last.getKey();
+        } else {
+            lastId = "0-0";
+        }
+        String[] lastParts = lastId.split("-");
+        String[] newParts = entryId.split("-");
+        long lastMs = Long.parseLong(lastParts[0]);
+        long newMs = Long.parseLong(newParts[0]);
+        if(Long.compare(lastMs, newMs) > 0){
+            return false;
+        }
+        if(Long.compare(lastMs, newMs) == 0) {
+            long lastseq = Long.parseLong(lastParts[1]);
+            long newseq = Long.parseLong(newParts[1]);
+            if(Long.compare(lastseq, newseq)>=0){
+                return false;
+            }
+        }
+        return true;
+    }
     public Value xadd(String key, String entryId, Map<String, String> entries){
-        rwLock.writeLock().lock();
+        rwLock.writeLock().lock();    
         Value val = Value.newStream();
         try{
             val.stream.put(entryId, entries);
