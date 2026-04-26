@@ -76,10 +76,11 @@ public class CommandHandler {
         for(int i=3; i< command.length; i+=2){
             entries.put(command[i], command[i+1]);
         }
-        command[2] = entryId;
         if (entryId.equals("0-0")) {
             return "-ERR The ID specified in XADD must be greater than 0-0\r\n";
         }
+        entryId = store.resolveEntryIdForStream(key, entryId);
+        command[2] = entryId;
         boolean flag = store.verifyEntryIdForStream(key, entryId);
         if(!flag) {
             return "-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n";

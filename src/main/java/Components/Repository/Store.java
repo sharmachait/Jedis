@@ -297,7 +297,42 @@ public class Store {
             rwLock.writeLock().unlock();
         }
     }
+    public String resolveEntryIdForStream(String key, String entryId) {
+        if (!entryId.contains("*")) return entryId; // explicit ID, nothing to resolve
+    
+    rwLock.readLock().lock();
+    try {
+        Value val = map.getOrDefault(key, null);
+        String lastId = "0-0";
+        if (val != null && val.type == ValueType.STREAM) {
+            Map.Entry<String, Map<String, String>> last = val.stream.lastEntry();
+            if (last != null) lastId = last.getKey();
+        }
+        
+        String[] lastParts = lastId.split("-");
+        long lastMs = Long.parseLong(lastParts[0]);
+        long lastSeq = Long.parseLong(lastParts[1]);
+        
+        if (entryId.equals("*")) {
+            // auto generate both ms and seq
+            long nowMs = System.currentTimeMillis();
+            long seq = nowMs == lastMs ? lastSeq + 1 : 0;
+            return nowMs + "-" + seq;
+        }
+        
+        // ms-* : ms is explicit, seq is auto
+        String[] parts = entryId.split("-");
+        long newMs = Long.parseLong(parts[0]);
+        long seq = newMs == lastMs ? lastSeq + 1 : 0;
+        return newMs + "-" + seq;
+        
+    } finally {
+        rwLock.readLock().unlock();
+    }
+    }
     public boolean verifyEntryIdForStream(String key, String entryId) {
+        rwLock.readLock().lock();
+        try{ 
         Value val = map.getOrDefault(key, null);
         if(val == null) return true;
         if(val.type != ValueType.STREAM) return false;
@@ -323,6 +358,10 @@ public class Store {
             }
         }
         return true;
+        }
+        finally{
+          rwLock.readLock().unlock();
+        }
     }
     public Value xadd(String key, String entryId, Map<String, String> entries){
         rwLock.writeLock().lock();    
