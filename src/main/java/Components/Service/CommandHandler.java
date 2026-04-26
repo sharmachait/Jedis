@@ -76,6 +76,7 @@ public class CommandHandler {
         for(int i=3; i< command.length; i+=2){
             entries.put(command[i], command[i+1]);
         }
+        command[2] = entryId;
         store.xadd(key, entryId, entries);
         return respSerializer.serializeBulkString(entryId);
     }
