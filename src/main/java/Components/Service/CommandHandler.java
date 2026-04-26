@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -67,6 +68,16 @@ public class CommandHandler {
 
         String type = store.getValue(key).type.toString().toLowerCase();
         return "+"+type+"\r\n";
+    }
+    public String xadd(String[] command) {
+        String key = command[1];
+        String entryId = command[2];
+        Map<String, String> entries = new HashMap<>();
+        for(int i=3; i< command.length; i+=2){
+            entries.put(command[i], command[i+1]);
+        }
+        store.xadd(key, entryId, entries);
+        return respSerializer.serializeBulkString(entryId);
     }
     public String lpop(String[] command){
         String key = command[1];

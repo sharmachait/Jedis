@@ -297,4 +297,14 @@ public class Store {
             rwLock.writeLock().unlock();
         }
     }
+    public Value xadd(String key, String entryId, Map<String, String> entries){
+        rwLock.writeLock().lock();
+        Value val = Value.newStream();
+        try{
+            val.stream.put(entryId, entries);
+        }finally{
+            rwLock.writeLock().unlock();
+        }
+        return val;
+    }
 }
