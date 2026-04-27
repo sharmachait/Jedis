@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
+
 @Component
 public class RespSerializer {
     public String serializeBulkString(String s){
@@ -39,7 +40,28 @@ public class RespSerializer {
         }
         return i;
     }
-
+    public String respXrange(List<Map.Entry<String, Map<String,String>>> entries){
+        StringBuilder res = new StringBuilder();
+        res.append("*").append(entries.size()).append("\r\n");
+    
+        for (Map.Entry<String, Map<String, String>> entry : entries) {
+            String id = entry.getKey();
+            Map<String, String> fields = entry.getValue();
+            res.append("*2\r\n");
+            res.append(serializeBulkString(id));    
+            List<String> fieldList = new ArrayList<>();
+            for (Map.Entry<String, String> field : fields.entrySet()) {
+                fieldList.add(field.getKey());
+                fieldList.add(field.getValue());
+            }
+            res.append("*").append(fieldList.size()).append("\r\n");
+            for (String f : fieldList) {
+                res.append(serializeBulkString(f));
+            }
+        }
+    
+        return res.toString();
+    }
     public List<String[]> deseralize(byte[] command){
         try{
             String data = new String(command, StandardCharsets.UTF_8);

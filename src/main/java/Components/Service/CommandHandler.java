@@ -69,6 +69,29 @@ public class CommandHandler {
         String type = store.getValue(key).type.toString().toLowerCase();
         return "+"+type+"\r\n";
     }
+    public String xrange(String[] command){
+        String key = command[1];
+        String from = command[2];
+        String to = command[3];
+
+        from = normalizeFromXrange(from);
+        to = normalizeToXrange(to);
+        
+        List<Map.Entry<String, Map<String,String>>> xrangeResult = store.xrange(key, from, to);
+
+        return respSerializer.respXrange(xrangeResult);
+    }
+    private String normalizeFromXrange(String from){
+        if(from.equals("-")) return "0-0";
+        if(!from.contains("-")) return from + "-0";
+        return from;
+    }
+    private String normalizeToXrange(String to){
+        if(to.equals("-")) return Long.MAX_VALUE + "-" + Long.MAX_VALUE;
+        if(!to.contains("-")) return to + "-" + Long.MAX_VALUE;
+        return to;
+    }
+
     public String xadd(String[] command) {
         String key = command[1];
         String entryId = command[2];

@@ -363,6 +363,16 @@ public class Store {
           rwLock.readLock().unlock();
         }
     }
+    public List<Map.Entry<String, Map<String,String>>> xrange(String key, String from, String to){
+        rwLock.readLock().lock();
+        try{
+            Value val = map.get(key);
+            if (val == null) return new ArrayList<>();
+            return new ArrayList<>(val.stream.subMap(from, true, to, true).entrySet());
+        }finally{
+            rwLock.readLock().unlock();         
+        }
+    }
     public Value xadd(String key, String entryId, Map<String, String> entries){
         rwLock.writeLock().lock();    
         Value val = Value.newStream();
