@@ -368,7 +368,11 @@ public class Store {
         try{
             Value val = map.get(key);
             if (val == null) return new ArrayList<>();
-            return new ArrayList<>(val.stream.subMap(from, true, to, true).entrySet());
+System.out.println("stream keys: " + val.stream.keySet());
+        System.out.println("from: " + from + " to: " + to);
+        List<Map.Entry<String, Map<String,String>>> result = new ArrayList<>(val.stream.subMap(from, true, to, true).entrySet());
+        System.out.println("result size: " + result.size());
+        return result;
         }finally{
             rwLock.readLock().unlock();         
         }
