@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
 
 @Component
 public class CommandHandler {
@@ -87,7 +86,7 @@ public class CommandHandler {
         return from;
     }
     private String normalizeToXrange(String to){
-        if(to.equals("-")) return Long.MAX_VALUE + "-" + Long.MAX_VALUE;
+        if(to.equals("-")||to.equals("+")) return Long.MAX_VALUE + "-" + Long.MAX_VALUE;
         if(!to.contains("-")) return to + "-" + Long.MAX_VALUE;
         return to;
     }
