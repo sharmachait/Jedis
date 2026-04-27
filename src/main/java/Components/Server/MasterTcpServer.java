@@ -252,6 +252,9 @@ public class MasterTcpServer {
             case "TYPE":
                 res = commandHandler.type(command);
                 break;
+            case "XRANGE":
+                res = commandHandler.xrange(command);
+                break;
             case "XADD":
                 res = commandHandler.xadd(command);
                 String commandRespStringXadd = respSerializer.respArray(command);
