@@ -379,13 +379,16 @@ System.out.println("stream keys: " + val.stream.keySet());
     }
     public Value xadd(String key, String entryId, Map<String, String> entries){
         rwLock.writeLock().lock();    
-        Value val = Value.newStream();
         try{
+            Value val = map.get(key);
+            if(val == null) {
+                val = Value.newStream();
+                map.put(key, val);
+            }
             val.stream.put(entryId, entries);
-            map.put(key, val);
+            return val;
         }finally{
             rwLock.writeLock().unlock();
         }
-        return val;
     }
 }
