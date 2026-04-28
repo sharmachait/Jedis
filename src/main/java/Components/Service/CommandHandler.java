@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -73,10 +74,13 @@ public class CommandHandler {
         String from = command[3];
         if(from.equals("0"))
             from = "0-0";
-        
-        List<Map.Entry<String, Map<String,String>>> xrangeResult = store.xread(key, from);
+        Map<String, List<Map.Entry<String, Map<String, String>>>> result = new LinkedHashMap<>();
+        //linkedhashmap required to preserve order
 
-        return respSerializer.respXrange(xrangeResult);
+        List<Map.Entry<String, Map<String,String>>> xreadResult = store.xread(key, from);
+        result.put(key, xreadResult);
+
+        return respSerializer.respXread(result);
     }
     public String xrange(String[] command){
         String key = command[1];

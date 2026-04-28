@@ -40,6 +40,21 @@ public class RespSerializer {
         }
         return i;
     }
+    public String respXread(Map<String, List<Map.Entry<String, Map<String, String>>>> streams) {
+    StringBuilder res = new StringBuilder();
+    res.append("*").append(streams.size()).append("\r\n");
+    
+    for (Map.Entry<String, List<Map.Entry<String, Map<String, String>>>> stream : streams.entrySet()) {
+        String streamName = stream.getKey();
+        List<Map.Entry<String, Map<String, String>>> entries = stream.getValue();
+        
+        res.append("*2\r\n");
+        res.append(serializeBulkString(streamName));
+        res.append(respXrange(entries)); // reuse existing respXrange
+    }
+    
+    return res.toString();
+}
     public String respXrange(List<Map.Entry<String, Map<String,String>>> entries){
         StringBuilder res = new StringBuilder();
         res.append("*").append(entries.size()).append("\r\n");
