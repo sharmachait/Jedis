@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
@@ -70,16 +71,24 @@ public class CommandHandler {
         return "+"+type+"\r\n";
     }
     public String xread(String[] command){
-        String key = command[2];
-        String from = command[3];
-        if(from.equals("0"))
-            from = "0-0";
+        int len = command.length - 2;
+        List<String> keys = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        int noOfKeys = len / 2;
+        for(int i = 0; i < noOfKeys; i++){
+            keys.add(command[i + 2]);
+            ids.add(command[i + 2 + noOfKeys]);
+        }
         Map<String, List<Map.Entry<String, Map<String, String>>>> result = new LinkedHashMap<>();
-        //linkedhashmap required to preserve order
-
-        List<Map.Entry<String, Map<String,String>>> xreadResult = store.xread(key, from);
-        result.put(key, xreadResult);
-
+        for(int i = 0; i < keys.size(); i++){
+            String key = keys.get(i);
+            String from = ids.get(i);
+            if(from.equals("0"))
+                from = "0-0";
+            //linkedhashmap required to preserve order
+            List<Map.Entry<String, Map<String,String>>> xreadResult = store.xread(key, from);
+            result.put(key, xreadResult);
+        }
         return respSerializer.respXread(result);
     }
     public String xrange(String[] command){
