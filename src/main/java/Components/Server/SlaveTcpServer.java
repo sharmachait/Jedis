@@ -336,6 +336,9 @@ public class SlaveTcpServer {
             case "LRANGE":
                 res = commandHandler.lrange(command);
                 break;
+            case "XREAD":
+                res = commandHandler.xread(command);
+                break;
             case "XRANGE":
                 res = commandHandler.xrange(command);
                 break;

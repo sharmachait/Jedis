@@ -252,6 +252,9 @@ public class MasterTcpServer {
             case "TYPE":
                 res = commandHandler.type(command);
                 break;
+            case "XREAD":
+                res = commandHandler.xread(command);
+                break;
             case "XRANGE":
                 res = commandHandler.xrange(command);
                 break;

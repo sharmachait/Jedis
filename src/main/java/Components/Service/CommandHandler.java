@@ -68,6 +68,16 @@ public class CommandHandler {
         String type = store.getValue(key).type.toString().toLowerCase();
         return "+"+type+"\r\n";
     }
+    public String xread(String[] command){
+        String key = command[2];
+        String from = command[3];
+        if(from.equals("0"))
+            from = "0-0";
+        
+        List<Map.Entry<String, Map<String,String>>> xrangeResult = store.xread(key, from);
+
+        return respSerializer.respXrange(xrangeResult);
+    }
     public String xrange(String[] command){
         String key = command[1];
         String from = command[2];

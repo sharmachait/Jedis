@@ -363,6 +363,16 @@ public class Store {
           rwLock.readLock().unlock();
         }
     }
+    public List<Map.Entry<String, Map<String,String>>> xread(String key, String from){
+        rwLock.readLock().lock();
+        try{
+            Value val = map.get(key);
+            if (val == null) return new ArrayList<>();
+            return new ArrayList<>(val.stream.tailMap(from, false).entrySet());
+        }finally{
+            rwLock.readLock().unlock();         
+        }
+    }
     public List<Map.Entry<String, Map<String,String>>> xrange(String key, String from, String to){
         rwLock.readLock().lock();
         try{
