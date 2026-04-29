@@ -12,12 +12,16 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiFunction;
 
 @Component
 public class Store {
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock(true);
+    private final ReentrantLock streamLock = new ReentrantLock();
+    private final Condition streamUpdated = streamLock.newCondition();
     public ConcurrentHashMap<String, Value> map;
     public ConcurrentHashMap<String, Set<Integer>> watchingClientsListForKeys;
     public Set<Integer> failTransactionFor;
@@ -363,6 +367,33 @@ public class Store {
           rwLock.readLock().unlock();
         }
     }
+    
+    public List<Map.Entry<String, Map<String,String>>> xreadBlocking(String key, String from, long timeoutMs) throws InterruptedException {
+    // check if entries already available
+        List<Map.Entry<String, Map<String,String>>> existing = xread(key, from);
+        if (!existing.isEmpty()) return existing;
+        long deadlineNs = timeoutMs == 0 
+            ? Long.MAX_VALUE 
+            : System.nanoTime() + timeoutMs * 1_000_000L;
+        streamLock.lock();
+        try {
+            while (true) {
+                List<Map.Entry<String, Map<String,String>>> result = xread(key, from);
+                if (!result.isEmpty()) return result;
+
+                if (timeoutMs == 0) {
+                    streamUpdated.await(); // block indefinitely
+                } else {
+                    long remainingNs = deadlineNs - System.nanoTime();
+                    if (remainingNs <= 0) return null; // timed out
+                    streamUpdated.awaitNanos(remainingNs);
+                }
+            }
+        } finally {
+            streamLock.unlock();
+        }
+    }
+
     public List<Map.Entry<String, Map<String,String>>> xread(String key, String from){
         rwLock.readLock().lock();
         try{
@@ -392,9 +423,16 @@ public class Store {
                 map.put(key, val);
             }
             val.stream.put(entryId, entries);
-            return val;
         }finally{
             rwLock.writeLock().unlock();
         }
+        // signal any blocked xread
+        streamLock.lock();
+        try {
+            streamUpdated.signalAll();
+        } finally {
+            streamLock.unlock();
+        }
+        return map.get(key);
     }
 }

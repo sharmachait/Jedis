@@ -70,7 +70,42 @@ public class CommandHandler {
         String type = store.getValue(key).type.toString().toLowerCase();
         return "+"+type+"\r\n";
     }
+    public String blockingXread(String[] command){
+        long timeoutMs = Long.parseLong(command[2]);
+        int len = command.length - 4;
+        List<String> keys = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        int noOfKeys = len / 2;
+        for(int i = 0; i < noOfKeys; i++){
+            keys.add(command[i + 4]);
+            ids.add(command[i + 4 + noOfKeys]);
+        }
+        try{
+            Map<String, List<Map.Entry<String, Map<String, String>>>> result = new LinkedHashMap<>();
+            for(int i = 0; i < keys.size(); i++){
+                String key = keys.get(i);
+                String from = ids.get(i);
+                if(from.equals("0"))
+                    from = "0-0";
+                if (from.equals("$")) {
+                // $ means only entries added after this command was issued
+                    Value val = store.getValue(key);
+                    from = (val == null || val.stream.isEmpty()) ? "0-0" : val.stream.lastKey();
+                }
+            //linkedhashmap required to preserve order
+                List<Map.Entry<String, Map<String,String>>> xreadResult = store.xreadBlocking(key, from, timeoutMs);
+                if (xreadResult == null) return "*-1\r\n";
+                result.put(key, xreadResult);
+            }
+            return respSerializer.respXread(result);
+        } catch(InterruptedException e) {
+            return "*-1\r\n";
+        }
+    }
     public String xread(String[] command){
+        if(command[1].toLowerCase().equals("block")){
+            return blockingXread(command);
+        }
         int len = command.length - 2;
         List<String> keys = new ArrayList<>();
         List<String> ids = new ArrayList<>();
